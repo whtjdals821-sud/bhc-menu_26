@@ -15,7 +15,7 @@
 
     body {
       background: #ffffff;
-      padding: 20px;
+      padding: 16px;
       color: #111111;
     }
 
@@ -23,35 +23,27 @@
       max-width: 1400px;
       margin: 0 auto;
       background: #ffffff;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
     }
 
     .logo-wrap {
       display: flex;
       justify-content: flex-end;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
     }
 
     .logo-wrap img {
-      height: 56px;
+      height: 60px;
       width: auto;
     }
 
     .tabs {
       display: flex;
-      flex-wrap: wrap;
       gap: 10px;
-      margin-bottom: 30px;
-      background: transparent;
-      padding: 0;
-      border-radius: 0;
+      margin-bottom: 20px;
     }
 
     .tab-btn {
       flex: 1;
-      min-width: 120px;
       padding: 12px 20px;
       border: none;
       background: transparent;
@@ -77,66 +69,60 @@
       display: block;
     }
 
-    .table-wrap {
-      overflow-x: auto;
+    .notice {
+      margin-bottom: 16px;
+      font-size: 13px;
+      color: #555555;
+      line-height: 1.9;
     }
 
-    table {
+    /* 모바일 카드형 테이블 */
+    .menu-table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 600px;
     }
 
-    th {
+    .menu-table th {
       background: #e0e0e0;
       color: #111111;
-      padding: 14px;
+      padding: 12px 10px;
       border: 1px solid #cccccc;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
-      white-space: nowrap;
+      text-align: center;
     }
 
-    td {
-      padding: 12px;
+    .menu-table td {
+      padding: 12px 10px;
       border: 1px solid #e2e2e2;
       font-size: 13px;
       text-align: center;
       vertical-align: middle;
       line-height: 1.7;
       color: #111111;
+      word-break: keep-all;
+      word-wrap: break-word;
     }
 
-    tr:nth-child(even) td {
+    .menu-table tr:nth-child(even) td {
       background: #f9f9f9;
     }
 
-    tr:hover td {
-      background: #f2f2f2;
-      transition: background 0.15s;
+    /* 구분/중량 열 너비 고정 */
+    .col-type  { width: 23%; }
+    .col-weight { width: 27%; }
+    .col-menu  { width: 50%; }
+
+    /* 적용 메뉴 셀: 줄바꿈 허용, 작은 폰트 */
+    .col-menu td, .menu-table td:last-child {
+      font-size: 12px;
+      text-align: left;
+      word-break: keep-all;
     }
 
-    .notice {
-      margin-bottom: 18px;
-      font-size: 13px;
-      color: #555555;
-      line-height: 1.9;
-    }
-
-    @media (max-width: 768px) {
-      .container {
-        padding: 16px;
-      }
-      .logo-wrap img {
-        height: 40px;
-      }
-      .tabs {
-        border-radius: 16px;
-      }
-      .tab-btn {
-        min-width: 100%;
-        border-radius: 12px;
-      }
+    @media (max-width: 480px) {
+      .logo-wrap img { height: 48px; }
+      .menu-table th, .menu-table td { font-size: 11px; padding: 8px 6px; }
     }
   </style>
 </head>
@@ -159,69 +145,67 @@
         ※ 매장마다 취급하는 메뉴가 상이할 수 있습니다.
       </div>
 
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>구분</th>
-              <th>중량 및 조각수</th>
-              <th>적용 메뉴</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>한마리<br>(중량 표시)</td>
-              <td>10호<br>(951g ~ 1,050g)</td>
-              <td>해바라기 후라이드, HOT후라이드, 바삭클,<br>후라이드/양념 반반치킨, 뿌링클, HOT뿌링클, 콰삭킹,<br>콰삭톡, 맛초킹, 골드킹, HOT골드킹, 양념치킨, 쏘마치,<br>레드킹, 스윗칠리킹, 후라이드/스윗칠리킹 반반치킨,<br>쏘이갈릭킹 오리지널, 쏘이갈릭킹 허니, 레드맛초 반반킹</td>
-            </tr>
-            <tr>
-              <td>반마리<br>(중량 표시)</td>
-              <td>10호 1/2<br>(476g ~ 525g)</td>
-              <td>후라이드 반마리, HOT후라이드 반마리,<br>맛초킹 반마리, 뿌링클 반마리, 골드킹 반마리,<br>후라이드(반)+맛초킹라이스+콜라500ml,<br>후라이드(반)+뿌링치즈볼+콜라245ml,<br>후라이드(반)+뿌링클라이스+콜라500ml,<br>뿌링클(반)+맛초킹라이스+콜라500ml,<br>뿌링클(반)+뿌링클라이스+콜라500ml,<br>뿌링클(반)+치즈볼+콜라245ml,<br>골드킹(반)+맛초킹라이스+콜라500ml,<br>골드킹(반)+뿌링클라이스+콜라500ml,<br>골드킹(반)+치즈볼+콜라245ml,<br>맛초킹(반)+맛초킹라이스+콜라500ml,<br>맛초킹(반)+뿌링클라이스+콜라500ml,<br>맛초킹(반)+치즈볼+콜라245ml</td>
-            </tr>
-            <tr>
-              <td>사이정육<br>(중량 표시)</td>
-              <td>600g 이상</td>
-              <td>동글락 바삭 치킨</td>
-            </tr>
-            <tr>
-              <td>닭목살<br>(중량 표시)</td>
-              <td>200g 이상</td>
-              <td>치킨 스넥</td>
-            </tr>
-            <tr>
-              <td>콤보<br>(조각 수 표시)</td>
-              <td>다리 5조각<br>윙 5조각<br>봉 5조각</td>
-              <td>해바라기 후라이드, HOT후라이드, 뿌링클, 콰삭킹,<br>콰삭톡, 맛초킹, 골드킹, HOT골드킹, 양념치킨,<br>쏘마치, 레드킹, 스윗칠리킹, 쏘이갈릭킹 오리지널,<br>쏘이갈릭킹 허니</td>
-            </tr>
-            <tr>
-              <td>3&amp;7콤보<br>(조각 수 표시)</td>
-              <td>다리 3조각<br>윙 7조각<br>봉 7조각</td>
-              <td>해바라기 후라이드, 뿌링클, 콰삭킹, 콰삭톡,<br>맛초킹, 골드킹, 양념치킨, 쏘마치, 레드킹,<br>스윗칠리킹, 쏘이갈릭킹 오리지널, 쏘이갈릭킹 허니</td>
-            </tr>
-            <tr>
-              <td>윙/봉<br>(조각 수 표시)</td>
-              <td>윙 10조각<br>봉 10조각</td>
-              <td>해바라기 후라이드, HOT후라이드, 뿌링클, 콰삭킹,<br>콰삭톡, 맛초킹, 골드킹, HOT골드킹, 양념치킨,<br>쏘마치, 레드킹, 스윗칠리킹, 쏘이갈릭킹 오리지널,<br>쏘이갈릭킹 허니</td>
-            </tr>
-            <tr>
-              <td>스틱<br>(조각 수 표시)</td>
-              <td>다리 10조각</td>
-              <td>해바라기 후라이드, HOT후라이드, 뿌링클, 콰삭킹,<br>콰삭톡, 맛초킹, 골드킹, HOT골드킹, 양념치킨,<br>쏘마치, 레드킹, 스윗칠리킹, 쏘이갈릭킹 오리지널,<br>쏘이갈릭킹 허니</td>
-            </tr>
-            <tr>
-              <td>순살(FF)<br>(중량 표시)</td>
-              <td>600g 이상</td>
-              <td>바삭클 순살, 뿌링클, HOT뿌링클, 콰삭킹, 콰삭톡,<br>맛초킹, 골드킹, 쏘마치, 레드킹, 스윗칠리킹,<br>쏘이갈릭킹 오리지널, 쏘이갈릭킹 허니, 레드맛초 반반킹</td>
-            </tr>
-            <tr>
-              <td>순살(FF)<br>(중량 표시)</td>
-              <td>580g 이상</td>
-              <td>더블팝 순살 후라이드, 더블팝 순살 양념</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <table class="menu-table">
+        <thead>
+          <tr>
+            <th class="col-type">구분</th>
+            <th class="col-weight">중량 및 조각수</th>
+            <th class="col-menu">적용 메뉴</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>한마리<br>(중량 표시)</td>
+            <td>10호<br>(951g ~ 1,050g)</td>
+            <td>해바라기 후라이드, HOT후라이드, 바삭클, 후라이드/양념 반반치킨, 뿌링클, HOT뿌링클, 콰삭킹, 콰삭톡, 맛초킹, 골드킹, HOT골드킹, 양념치킨, 쏘마치, 레드킹, 스윗칠리킹, 후라이드/스윗칠리킹 반반치킨, 쏘이갈릭킹 오리지널, 쏘이갈릭킹 허니, 레드맛초 반반킹</td>
+          </tr>
+          <tr>
+            <td>반마리<br>(중량 표시)</td>
+            <td>10호 1/2<br>(476g ~ 525g)</td>
+            <td>후라이드 반마리, HOT후라이드 반마리, 맛초킹 반마리, 뿌링클 반마리, 골드킹 반마리, 후라이드(반)+맛초킹라이스+콜라500ml, 후라이드(반)+뿌링치즈볼+콜라245ml, 후라이드(반)+뿌링클라이스+콜라500ml, 뿌링클(반)+맛초킹라이스+콜라500ml, 뿌링클(반)+뿌링클라이스+콜라500ml, 뿌링클(반)+치즈볼+콜라245ml, 골드킹(반)+맛초킹라이스+콜라500ml, 골드킹(반)+뿌링클라이스+콜라500ml, 골드킹(반)+치즈볼+콜라245ml, 맛초킹(반)+맛초킹라이스+콜라500ml, 맛초킹(반)+뿌링클라이스+콜라500ml, 맛초킹(반)+치즈볼+콜라245ml</td>
+          </tr>
+          <tr>
+            <td>사이정육<br>(중량 표시)</td>
+            <td>600g 이상</td>
+            <td>동글락 바삭 치킨</td>
+          </tr>
+          <tr>
+            <td>닭목살<br>(중량 표시)</td>
+            <td>200g 이상</td>
+            <td>치킨 스넥</td>
+          </tr>
+          <tr>
+            <td>콤보<br>(조각 수 표시)</td>
+            <td>다리 5조각<br>윙 5조각<br>봉 5조각</td>
+            <td>해바라기 후라이드, HOT후라이드, 뿌링클, 콰삭킹, 콰삭톡, 맛초킹, 골드킹, HOT골드킹, 양념치킨, 쏘마치, 레드킹, 스윗칠리킹, 쏘이갈릭킹 오리지널, 쏘이갈릭킹 허니</td>
+          </tr>
+          <tr>
+            <td>3&amp;7콤보<br>(조각 수 표시)</td>
+            <td>다리 3조각<br>윙 7조각<br>봉 7조각</td>
+            <td>해바라기 후라이드, 뿌링클, 콰삭킹, 콰삭톡, 맛초킹, 골드킹, 양념치킨, 쏘마치, 레드킹, 스윗칠리킹, 쏘이갈릭킹 오리지널, 쏘이갈릭킹 허니</td>
+          </tr>
+          <tr>
+            <td>윙/봉<br>(조각 수 표시)</td>
+            <td>윙 10조각<br>봉 10조각</td>
+            <td>해바라기 후라이드, HOT후라이드, 뿌링클, 콰삭킹, 콰삭톡, 맛초킹, 골드킹, HOT골드킹, 양념치킨, 쏘마치, 레드킹, 스윗칠리킹, 쏘이갈릭킹 오리지널, 쏘이갈릭킹 허니</td>
+          </tr>
+          <tr>
+            <td>스틱<br>(조각 수 표시)</td>
+            <td>다리 10조각</td>
+            <td>해바라기 후라이드, HOT후라이드, 뿌링클, 콰삭킹, 콰삭톡, 맛초킹, 골드킹, HOT골드킹, 양념치킨, 쏘마치, 레드킹, 스윗칠리킹, 쏘이갈릭킹 오리지널, 쏘이갈릭킹 허니</td>
+          </tr>
+          <tr>
+            <td>순살(FF)<br>(중량 표시)</td>
+            <td>600g 이상</td>
+            <td>바삭클 순살, 뿌링클, HOT뿌링클, 콰삭킹, 콰삭톡, 맛초킹, 골드킹, 쏘마치, 레드킹, 스윗칠리킹, 쏘이갈릭킹 오리지널, 쏘이갈릭킹 허니, 레드맛초 반반킹</td>
+          </tr>
+          <tr>
+            <td>순살(FF)<br>(중량 표시)</td>
+            <td>580g 이상</td>
+            <td>더블팝 순살 후라이드, 더블팝 순살 양념</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
   </div>
