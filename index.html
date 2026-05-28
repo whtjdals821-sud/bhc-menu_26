@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BHC 메뉴 정보</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:"Pretendard",sans-serif; }
+    body { background:#fff; padding:16px; color:#111; }
+    .container { max-width:1400px; margin:0 auto; }
+
+    .logo-wrap { display:flex; justify-content:center; margin-bottom:20px; }
+    .logo-wrap img { height:110px; width:auto; }
+
+    /* 탭 버튼 영역 */
+    .tabs {
+      display:flex;
+      gap:4px;
+      margin-bottom:20px;
+      background:#ebebeb;
+      border-radius:50px;
+      padding:5px;
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+    }
+    .tabs::-webkit-scrollbar { display:none; }
+    .tab-btn {
+      flex:1;
+      flex-shrink:0;
+      padding:10px 18px;
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      font-size:14px;
+      font-weight:600;
+      border-radius:50px;
+      color:#888;
+      transition:all 0.2s;
+      white-space:nowrap;
+      font-family:"Pretendard",sans-serif;
+    }
+    .tab-btn.active { background:#f5c426; color:#2b1d0e; box-shadow:0 2px 8px rgba(245,196,38,0.35); }
+
+    .tab-content { display:none; }
+    .tab-content.active { display:block; }
+
+    .notice { margin-bottom:14px; font-size:13px; color:#555; line-height:1.9; }
+
+    .table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+    table { width:100%; border-collapse:collapse; }
+    th {
+      background:#ebebeb; color:#111;
+      padding:11px 8px;
+      border:1px solid #d8d8d8;
+      font-size:12px; font-weight:700;
+      white-space:nowrap; text-align:center;
+    }
+    td {
+      padding:10px 8px;
+      border:1px solid #e2e2e2;
+      font-size:12px;
+      text-align:center;
+      vertical-align:middle;
+      line-height:1.7;
+      word-break:keep-all;
+      word-wrap:break-word;
+    }
+    tr:nth-child(even) td { background:#f9f9f9; }
+    tr:hover td { background:#f2f2f2; }
+
+    /* 영양성분은 가로 스크롤 허용 */
+    #nutrition table { min-width:900px; }
+
+    @media(max-width:480px) {
+      .logo-wrap img { height:80px; }
+      th, td { font-size:11px; padding:7px 5px; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div class="logo-wrap">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABnYAAAI6CAIAAACVdeE7AABVb0lEQVR4nO3dcXhc5Z0v9pMVoWgJLGIaJzJJbux6ki44VuOAYNcQE4qQEy6+8OC4sp3NPoCo2ogQU0PYXuzkIZZvLwE3ToK5jzYGskmw9RDzwJo6sSKXhQ3uEkHMI9aQBqk298JaWdJBFJJOumGW/jG5WkXSvBrNmaMzI38+f8k6o/f8PHNm7PPV+3vfd7z99tsRAAAAAFCpP0i7AAAAAACobyI2AAAAAIhFxAYAAAAAsYjYAAAAACAWERsAAAAAxCJiAwAAAIBYRGwAAAAAEIuIDQAAAABiEbEBAAAAQCwiNgAAAACIRcQGAAAAALGI2AAAAAAgFhEbAAAAAMQiYgMAAACAWERsAAAAABCLiA0AAAAAYhGxAQAAAEAsIjYAAAAAiEXEBgAAAACxiNgAAAAAIBYRGwAAAADEImIDAAAAgFhEbAAAAAAQi4gNAAAAAGIRsQEAAABALCI2AAAAAIhFxAYAAAAAsYjYAAAAACAWERsAAAAAxCJiAwAAAIBYRGwAAAAAEIuIDQAAAABiEbEBAAAAQCwiNgAAAACIRcQGAAAAALGI2AAAAAAgFhEbAAAAAMQiYgMAAACAWERsAAAAABCLiA0AAAAAYhGxAQAAAEAsIjYAAAAAiEXEBgAAAACxiNgAAAAAIBYRGwAAAADEImIDAAAAgFhEbAAAAAAQi4gNAAAAAGIRsQEAAABALCI2AAAAAIhFxAYAAAAAsYjYAAAAACAWERsAAAAAxCJiAwAAAIBYRGwAAAAAEIuIDQAAAABiEbEBAAAAQCwiNgAAAACIRcQGAAAAALGI2AAAAAAgFhEbAAAAAMQiYgMAAACAWERsAAAAABCLiA0AAAAAYhGxAQAAAEAsIjYAAAAAiEXEBgAAAACxiNgAAAAAIBYRGwAAAADEImIDAAAAgFhEbAAAAAAQi4gNAAAAAGIRsQEAAABALCI2AAAAAIhFxAYAAAAAsYjYAAAAACAWERsAAAAAxCJiAwAAAIBYRGwAAAAAEIuIDQAAAABiEbEBAAAAQCwiNgAAAACIRcQGAAAAALGI2AAAAAAgFhEbAAAAAMQiYgMAAACAWERsAAAAABCLiA0AAAAAYhGxAQAAAEAsIjYAAAAAiEXEBgAAAACxiNgAAAAAIBYRGwAAAADEImIDAAAAgFhEbAAAAAAQi4gNAAAAAGIRsQEAAABALCI2AAAAAIhFxAYAAAAAsYjYAAAAACAWERsAAAAAxCJiAwAAAIBYRGwAAAAAEIuIDQAAAABiEbEBAAAAQCwiNgAAAACIRcQGAAAAALGI2AAAAAAgFhEbAAAAAMQiYgMAAACAWERsAAAAABCLiA0AAAAAYhGxAQAAAEAsIjYAAAAAiEXEBgAAAACxiNgAAAAAIBYRGwAAAADEImIDAAAAgFhEbAAAAAAQi4gNAAAAAGIRsQEAAABALCI2AAAAAIhFxAYAAAAAsYjYAAAAACAWERsAAAAAxCJiAwAAAIBYRGwAAAAAEMtJaRcAs/dPL6VdwWyc9O7oD05NuwhK+OdfR2/9Mu0iZuPkD6ZdAQAAANN4x9tvv512DTBLP31H2hXMxqIHojPXp10EJby2Ozq2Ie0iZuNjPrEBAABqkUZRAAAAAIhFxAYAAAAAsYjYAAAAACAWERsAAAAAxCJiAwAAAIBYRGwAAAAAEIuIDQAAAABiEbEBAAAAQCwiNgAAAACIRcQGAAAAALGI2AAAAAAgFhEbAAAAAMQiYgMAAACAWERsAAAAABCLiA0AAAAAYhGxAQAAAEAsIjYAAAAAiEXEBgAAAACxiNgAAAAAIBYRGwAAAADEImIDAAAAgFhEbAAAAAAQi4gNAAAAAGIRsQEAAABALCI2AAAAAIhFxAYAAAAAsYjYAAAAACAWERsAAAAAxCJiAwAAAIBYRGwAAAAAEIuIDQAAAABiEbEBAAAAQCwiNgAAAACIRcQGAAAAALGI2AAAAAAgFhEbAAAAAMQiYgMAAACAWERsAAAAABCLiA0AAAAAYhGxAQAAAEAsIjYAAAAAiEXEBgAAAACxiNgAAAAAIBYRGwAAAADEImIDAAAAgFhEbAAAAAAQi4gNAAAAAGIRsQEAAABALCI2AAAAAIhFxAYAAAAAsYjYAAAAACAWERsAAAAAxCJiAwAAAIBYRGwAAAAAEIuIDQAAAABiEbEBAAAAQCwiNgAAAACIRcQGAAAAALGI2AAAAAAgFhEbAAAAAMQiYgMAAACAWERsAAAAABCLiA0AAAAAYhGxAQAAAEAsIjYAAAAAiEXEBgAAAACxiNgAAAAAIBYRGwAAAADEImIDAAAAgFhEbAAAAAAQi4gNAAAAAGIRsQEAAABALCI2AAAAAIhFxAYAAAAAsYjYAAAAACAWERsAAAAAxCJiAwAAAIBYRGwAAAAAEIuIDQAAAABiEbEBAAAAQCwiNgAAAACIRcQGAAAAALGI2AAAAAAgFhEbAAAAAMQiYgMAAACAWERsAAAAABDLSWkXAPPd//O/pV1B/Tjj30R/cGraRdS213anXMC7/vR3X5z0bi9WXXr7rei3r/zu6/wLUeH1NIupLyf/q+hdK9IuAgCA2iVig4S9tid6bU/aRdSJjxyLTpbaBB3bkHYFv++d741O+0R00rujU8+PTv5X0clnRSd/MO2a+M/e+mX0219E+b+P/r+R6Df/Z5R/Pso/l3ZN9ezMdSI2AAACRGwAVOq3v5gmQT790uhdF0Wn/bfRH/43ZrrNqbffin7zs+jNJ6Jf/x+SfQAAmGMiNgCq6o2D0RsHo+jLURRF73xv1LQ2Or09Om2luC0RxVjt9YejX/04euNg2tUAAMCJS8QGQGJ++4vo1W9Er34jiqLo9EujBTfJ2qrj7beiX/8kGnvwd88tAACQNhEbAHPid7Pb/nPWdvpl0Tv8GzR7+b+P/u9dkjUAAKg1bm8AmFvFrO2d743e/T9G7/4fo5PenXZB9eCffx29/tfRL+6wZQEAANSmP0i7AABOSL/9RXT8y9HQgmi4LfrVobSrqWH/9FL08heiZ98VHdsgXwMAgJplFhsAqSpOamtcFn3gnuhdK9Kuppb886+jf/i3ekIZVygUBgYGEj1Fc3NzS0tLOY8cGhoaHR0tdbSlZVlz88KYxYyOHh8aeu7JJ3989OjR4eHhiYcymcy555574YUXLVmyZNGiRQ0NDeUPGLOqsJUrV0ZR9MQTT4Qf09jYONuRDxw4EH7A+eef39TUNNthy5HP5w8fPvyzn73w7LPPDg4OTjw0/kJU8Irn8/nwE1XKkiVLTj31D4tfL1jwnjJf/YnGxsZ+8pOflDpa5gtUKBSOHTt2+PDh554beuaZZ3K53MSj2Wz2Yx/72DnnLI3zXpjxRZ+qpWVZ8YtTTmkMXA8zvhdWrVo121OX84JWMGwc4ZJKvdDhD7cy/wrhj+tSV0VVTj3R+Jv3sccem/QpOn6Jhj86wm+Wyqoq59+yyj4noRa84+233067Bpiln74j7QpIxkeORSd/cE7P+Nru6NiGOT0jYY3LoiV/PdeXQQ36519H/7g9Ov7ltOtggjPXRYt2p1vC6Ojx1atXJ3qKrVt7yrlfyufzH//4RYEHtLe39/Rsq6yG4t3Xd77zV5NuCEvJZDJr1qzZsOEzM96P7dr1rd7e3sqqKtOPfjTQ1NS0fv26QPFlPskTHThwYMuWzYEHZLPZ7373exWETWFDQ0Pf//6D/f395Tw4m812d99wwQUXlFnG0NBQZ+d18Qr83XkvueSS885rLTMdjmZ6PosvYuDH8/n8Aw98b+/evZNitUCFn/3sn7e1tc3qBRobG7vssrbyHz9VJpNpa2u74II/mfqizPgW3rdv32yTwc2bbwtfKh0dHZs23TyrMWM6dOjQxo1fKHW01AsdeP+2trbu3HlPOacOf1yX+hBYtaq91EVV/qmjKCoUCk899dTu3Q9MysRLyWazt976F9O+g2a8VHbturf8t17RjJdKnH9BIHUaRQGoGfnnor9fFB1bH/3zr9MuJSVvvxW9enf07Lvka0yV9AysKIqWLFlSzsO2besJP+Do0aOVFTAyMnL55Z/asmVzmflaFEW5XK63t/fjH79oxik/zz77bGVVla94x97dfUPgMTt2fG1WY46NjYXztSiKdu68p7r52tDQ0Pr16zo7ryszX4uiaHh4eOPGL1x++adGR4+X8/if//znMQr8vfP29vZ2dl63efNtY2Nj5fzIk0/+OHA0nK8dOHDg4x+/qLe3t8x8rVjhli2bL7/8UyMjI2X+SBRF/+k//afyHzytXC7X19dXfFEmnbqxsbG9vT3ws7t3z+43CgcOHAhfKtlsduPGm2Y1Znw/+9kLpQ5lMplpX+h8Ph/48PnoRz9a5qnDH9fjkw0nnTpwUZV/6kOHDl1++ac2bvxCmflaFEXDw8OdndetX79u6juosbGxq6sr8LPf//6DZZ5lvLzwpZLJZG6//SuzGhNqiogNgBrz2p7o2XdFr+2O3n4r7VLmVv7vo79/f/Ty59Ougxr1/PNHkj7FWWedNeNjRkePzxi7lB+QTXTgwIF16zrKTy4m2bJlc3f35wqFQqkHlH/DWZnxzOKCCy7IZDKlHpbL5YaGhsocs1AodHd/LvyYrVt7qtgims/nu7s/19l5XWUvYi6XW7169YMPznzX/dxz5T4JZerv77/ssrZyYqxnnnmm1KFw8LR5820zxp2l5HK5des6du36VpmPr1YEWerU3d3dgR/p6+vL5/Nljl9OCrx9+/aqz7Kc0WOPPVbq0Lnnnjvt9//hH/4hMOAf//HZZZ46/HG9YMF7kjj12NhYd/fnNm78QmWfosPDw5dd1jb10+nqq9cEfqq/v7/MaDuKonw+v3XrDPHZ3XfvnPtLBapIxAZATTq2IfrZx6J/eintOubEP/86OrY+emFZ9NtfpF0KteunP/1pouNnMply1r7p6ZlhCltR+TddRaOjxysOL8YNDg6WmiNW5tSqOJYt+123VENDw7XXhlog77jj35c55kMPPRSOutrb26u4vtXIyMhVV10ZP4u8886vzhgjlj8/blZuuKE7fO2NjY0FAojxF3GqGSdqlaO3t/fQobJ2+Kl6BDnp1M3NC7PZbODxjz76aJkjb958W/gBW7f2xF+ccbYKhULgvXPhhdM3P4Yj2sWLF5V59sDHdTabnTZCinnqoaGhdes64r95Ozuvm1RJU1NTOHp+6KG9ZQ6+bVtPOP675ZYvljmZGmqWiA2AWlXsG3317rTrSNivDkVHlkSv7Um7Dmpa+HaxKkpN65hoaGiozFu4WU2jKBQK11xzTfmPD+jr65s2wjh69FhVxg/48Ic/PP71FVdcEXjk8PBwOZHf6OjxO+/8auABmUzmttvi5pLjirfoFc8inKSz87pA1DXbBLZ8uVwuPO8v3IA58UWcqCoRcNHGjV8o56+fRAS5ceMXJl54t976F4EH33ffvYE5oeMOHDgQ/kxobW2d410Oil599R8DR0vlOOEm4jKDwvDH9cc+9rGqn7q4smG13rw33NA9aQ7jpz+9NvD43t7eci6VGVtEW1tbr7766jKLhJolYgOgtr38+Wi4LXrrl2nXkYC334pGvxL9/EKT15hR+HaxKkpN6xhXKBTKn341q2Wnduz4WrVuDqMSEUZgVaZq+cAHPjD+9YwLGM241lWhUNi0aVP4MXffvbNam+5Va/OBiQJ9uy+8kODLMTw8HJhDF27AnPgijivntZiVcEdzlGQEuX///vGvW1pawh3NR47M0Jw+Y4toJpO5667tsy2yKsKroZVqig80Ebe2tpZ56vDH9TnnLK3uqXft+lZ137y5XO7mm3/vgm9paQnPeZxxh9CxsbHA1hNFPT3btIgyD4jYAKh5bxyMXlgW/aqs5pq68dYvo5FP2taAMtXCXgcDAwPlz6Qrf+W4oaGhvr6+Mh9cpnXrOiZ9Z872Ohh3+eWXBx4841pX999/X/jZ7urqqlZH1ejo8arna1EUDQ8Pl+rbTTrxDCzBHm7AnHZVuxlfi9kaHh6+//77Ag+Iv9dBKb29vRMvvPAWBOFIvZyFAu+446vVSoFnK/ARVKopvlobDlR9r4OVKy8ufa6hJDZKHhwcnLSiYngXl+9856/CA87YTbxjx9eruKYkpOiktAsAgDL89hfRzy+M3v/NaEHoP3l1I//30fBlJq9RvtT3OigUCrPaCrP8TUXDs4oymczGjTe1tCw75ZTGpqamYpvb/v37w3eVuVxuZGRkYgI1Z3sdjGtuXtje3h5ojHr00UfXrp2+/WpkZCT8F8xms9dcc20FdU412y7d1tbW4p3wM888M+Pcw76+vvXr10/tcUs68ezv77/99q9MOyMm8IqUWnAqXG02m7311r9YsODdZ5zRdPLJJ7/66j/++tf/77e/fX+4J663t/eaa64tNWcn/KaYts6jR4+WmQMePnx4xYoVxa/b2toC09CGh4cnvY8mmnGhwI6OjpaWkmvbJS2wGlplex2cd165s9jCH9fTtnyGT12qf3lsbOzWW79YZlXRhCunnDfvnXd+9YorrhjPIou7uJT6qeLU0VIv94zdxO3t7ePXJNQ7ERsA9ePlz0eF16LmL6VdRzy/OhT9/MK0i6DObNp086ZNNwceMDp6fPXq1aWObt3aE3M5pPvvv29WvZzlR1qBWUWZTGb//h9MjCGKd6ednddv2PCZm2/eFDjLX//1IxOfsaefLtmEVbRr17cCqdZTT/2kgg6mT396bSBnue++e6+++uqpwxYKhRtuCO32GEXRzp33VKujqswu3fb29u7u7knpwOjo8Z07d4azpP3793d2Xj/pm4EXrr29vadnW7iYsbGx7dvvCp/31Vf/cWqWEW7ALLXXwayqLZ60p2dbd3f3NddcE3hujxw5UiqSeOKJx0v9VCaTCTw/hUJhYGAg3Lz55ptvjn/d0NDQ1dUVuPK//e37pz3djAsFZrPZ8BS5RCWx18G0TcTTCnRNlmr5PHz4cAWn3rz5tnLevF1dXRs2fGbSxL3R0eObNm0Kh6RPPPHE+D8cxV1cAi/697//4LTXczndxLffPsM2o1BHNIoCUFeOfzk6tj56+62066jUq3fL10hCBa1J5cvn8xX0IoUbIccFgpKNG28qFSQ1Njbeddf2wEpSs20+DcxUKrUD4IzCCxiVWutqxsxr69aeanVUjY4en/GJam1t3bdvX0/PtqmJVXPzwp6ebR0dk9tyJ9q7d/Jug+GtHmZcEzCKoqampttv/0rg1Y+i6Ne//n+nfjPcgLl8+fKp3wxX291dMgxtbl54xx2hEOrgwZJBTCDUC29L0tDQsGrVqq1bQ9v+vvLKyxP/uGHDZwIP7u/vn/pGLmfm4/bt21NcVyuJvQ7KfNNV1m1aQf9yOZvPtLa2/u3f/riz8/qpjbHNzQt3794TXuVtUvtneBeX/v7+qW+WcrqJ7757pyXYmE9EbADUm9f2RCOfrMuUbfQr0cufT7sI5qcKWpPKd889Oyv4qddfn3nJ9vCsopUrVwaONjY2XnttaAWxcja5G39k4Ga11A6A5fjsZ/88cHTqWleHDh0KZ17t7e1V3J+xpyeUxURR1Nra+o1vfDN8/WzceFM4SZx04x3e3bXMBeYaGhrCk6SmnZEUbsCctlc6UG02mw0/My0tLYEIo1QzdfwIMvzGeemllyb+sbGxsVSHbNEDD3xv0nfKSYFjfubEVNleBxU0EU8Vbvn84z8+uyqnLmfzmeKbN7wWXvgXFcPDwxM/RWfcxWXiZhpFM3YT33LLF6u1piTUCBEbAHXojYPRyCfTLmKWXtttcwOSE1h4qPyN8KYVnugUyFbK2aLhN78JzXR74oknwj8+7bSjceVvw1rZDoDlaGtrC9/BTsxT8vn81q2hhqlMJnPbbaGWq1kZGRkJz4Ip3qLPOMGkoaEhvBT6q6/+3pbQ4b0OwmsCTtTc3Bw4etppp039ZrgBc9owYmJb5STDw8Mzbv0ZWKi+1JMfP4I8+eSTA0enTokKzMWLomjv3r0Tc5YZ9ydpbW2tYgpcmcB8tFIvdGVNxFOFu00XL15UlVM/9dRT4eiqzDfvjL+omPTZGN7FZdJmGiMjI+Fu4tbW1quvvjpcIdQdERsA9emNg9Fo/Sze8atD0bENaRfBvJXP5wO3W+VvhDetnTtLTmFrb2/fvn17qaOT+tEq8J3v/FV4JtqkuKH9951ySrlbGSbXZtvQ0LBmzZrAA3bv3j3+9c03bwpPDrr77p1V3J/xr//6kfAD7rqr3F6/cNY5ae5YoCe3VPwxrUCjZVQiy6i4AbOU++67N/yAic9MJpOZdIlO+yPxI8hpG5DHTY2Mm5sXhuchPvXUU8Wv8/l8eH39TCZz110lPxPmzDPPlFx7sa2tbdrvh5uIS204MFW423TayX0VnHrnzrsDP5LJZMrJ14pKPSFFkz4bi7u4BB4//nuRctaU7OnZpkWU+cd2BwDUreKksNrf/cD+BiSsstakcgwNDQU6mMI7MEzqR5vWGWeEljcaHh7+sz/7zFe+sjUwc2fGfQzKEW6zXbDgPXEG37DhM4GV7Pr6+j73ue7GxsYZN93r6uqqYkdVPp8Pz0W65ZYvlp92NTY2tra2Tqw/m80uXrw4iqJly1omZQRVybkKhUK4/qmXVmUNmNPOhhvX19c3NjZ2222bSz1XS5Ysme0lGj+CDIeP07r11r/o7Cw5m2nnzruLGz5u29YTToHvuOOrVUyBKxNeDa3UpNRwE3H5ex0E0r1SE4pne+rR0ePhKWyBVSynampqmrRV6Pib98ILL5r6C4bwLi7f+c5fFecwfvnLXwpfKjt2fL1aa0pCTRGxAVDPjn85OuOqqPEjaddR2j//OjoamsMC8VXQmlSmwHI/XV1d4Ruk/v7+GbeGnPFufHh4eN26jmm3s6yiQJttxXsdjGtsbOzo6AjkQU888cTKlSvDm+5ls9lrrrk2ThmThHcwzGQys23g6unZVmz7Db9M8Rcai6KoUCjcf/994cdMvbQqa8Cc8e3T39/f398/7aaNlQlEkOEJR0Uzho/nn3/+1G+2tLRMylkmKnY0Hz16LLyLa0dHR6k9UudS+FcOpSalVrDhwFRzs9fB1CXPJspms7Nt1N2zp6+cN29RcReXUhnf8PBw8d+j8KXS3t5eDG1h/tEoCkCdG74s+udfp11Eaf/XldFvf5F2EcxzFbQmlePAgQOl7qMymcx44hNoMStnw4Hw+tlF/f39q1ev3rz5tnBAU5lCoRCYEhJnr4Nx69evDxz9znf+atu2GbYd2Lnznup2VP3whz8IHJ3VLJiipqam5uaFM15s8Xtyx8bG/uzPQhMDoxIrxFfWgBluohzX29v78Y9ftGvXt8rcSLeU8BU+47KAxScn8IBMJlMqLQpvH7F79+7wQoHZbDY8wpwJ/8qh1KTUOtrr4LHHHguc5dZb/yJwdFplvnnHhdde/Pa37w+3iGYymdtvr5+FPmCWRGwA1Lnf/iL6j9enXUQJr+2O3jiYdhHMfxW0Js2oUCjs2PG1Uke3bPnSeARTbCmaVjkbDoTXz56oGLR1d39uaCg06WO2ktvrYFxz88LACzE8PBye8bF1a091O6oKhUL4jOEtKeOouCd3bGxsZGTkwQcfvOyytnCXXBRFn/zkp6Z+s+IGzPC2sBMVg7bt2++qOAsOT7ULR5CHDh2a8ckJrAwYniLX19cX7vvbvr3clfuSFviVQ6lJqdXa6yA8ObSCvQ6mzusMr7wZRdEcTCS84IILAru49Pf3z7imZI1cKpAEjaIA1L/X9kRnfib6o2nuqdL01i9tccAcqKw1aUYPPfRQqWFbW1sn9vgsW9ZSKq85evTYjDMjmpsXdnV1hSclTTQ4ODg4OJjNZm+99S+qcjOZ3F4HE/33/31XeKm1Utrb26u+P2M4VWxtbU1uOa1AT24URV/+8uS1NY8ePTpjoDbJpOtzXMVrwLW1tT366L7yX76+vr6+vr7KupufeurvAkeLEeSk/G5o6Lnnnz9y9OjRcioMJNoNDQ2zeidOtHVrT3J93LMV+JVDqUmpL7wQmuEY3s1jonDLZwV7HUztXw6neB0dHYGj1dLQ0HDttdeFdwst5ZZbvljFNSWhBonYAJgX/uN10Udejt5RS/+uvfyFtCvghJDEXgf5fD5w+7R58++tGnb66adXVtu4zs7royia1b398PBwZ+d1VQnawvOqqhUchBcwKiWTydx2W2iNtsqEp0qtXHlx1c9YFO7JjWZav6lMk67PojhrwDU0NHzjG9+88cbPzyokLa7R1t7evmnTzeVPQgxHkBdcMM0yauVrb28PX8/hrTlKaW1trXoKXLHK9jqIv4trUQXdpk8/Hbqopp76zTffDDz+ggv+JHC0iq644ooKIrbW1tbZLvIIdUejKADzwm9/EY09mHYRE/zTS9Fre9IughNCeOGhs8+uJGK7556dpQ51dXVNuksPzPMKz+mYqLPz+nIWZZukGLRt3nxbnAWwBgZKbr9YcZvttMrvNxx39907k5hQFo4+L7ooqR2Qy2kcjmnq9VlU2V4H44opWzmLsk3S399/2WVtDz74YDnrEs4YQcYU3gI4iqLGxsby1x0rymQyd921PUZRVfbiiy8Gjpb6sIq/i2tUabfpbE8dXnmz/Al3MTU2Ns72EzuTyfT0bNMiyrwnYgNgvnhlU/T2W2kX8Z/9w79NuwJOFOE7rgrW8BodPV5qR8JMJrNhw+TF1E85peT959GjR8s/7zXXXDvb2/ui/v7+q666Mhw1lpJQm+202traAgsYTdXV1ZVQR1UF7WxVEe7Jja+rq6vUvqvhaUqLFs28625DQ8POnfdUkLJFUXTnnV+98cbPzxgEJxpB7tjx9XI+Dbq7QwvVT3XHHV9Nrq24Aj//+c8DR0st9ldxE/FE4ZbPD3/4w1U5deBDtfw0sCrKX0azaMuWL1V3TUmoTSI2AOaL3/4ieuNHaRcRRVEUvfVLU9iYM1XZCG+inTtLTmHbuPGmqbdwgbumWU3JaWho6OnZtmvXvRWkGLlc7oYbuiuYy5ZEm20pDQ0NgcXmJ8lms6XSovoV7smNI5PJ7Np1b2fn9aXmyAQ2YSy1BP5UTU1N3/3u97Zu7ZlVVFo0ODh4882bwo9JLoLs6uqadn26qcrcQbWoo6NjDhbXn5VAfFzqhY7TRDxRON37wAc+UJVTBz5Uy08Dq6K5eWH5/8R0dHSUeQVCvROxATCP/MP/nHYFURRF0S//Q9oVcKKo1kZ444aGhkpldtlsttSKS4F78tlurdjS0rJ7956tW3tmG7Tlcrlt23pm9SPRTG220+4AGMfUOYCl7Nx5T3IdVYHLprJYtkzhhcYq1t7evmdPXyDrCTdglloCf1oNDQ2rVq16+OFHurq6Zhu0DQ4OHjhwIPCAJCLITCazY8fXi8sdlunWW/+inIdls9mNG2+qtK6kBH7lUOqFjtlEPC48OXTaX0VU69Rp+fSn15bzsEwmU4OXCiRExAbAPJJ/Lnrrl2kXIWJj7lTWmhRwxx3/vtSh7dtLrri0ePHiUodefbWSt+SqVat2794z2xlt/f39hw4dmtWJwm22VW+ZbGxsLGfLv61bexLtqKpsb9OY8vl8dRcaa21tveWWL/7t3/64p2db+OkKN2CWWgI/oLGxsbPz+v37fzDbGW1btmwO5JtVjyBbW1v37Omb7eyhlpaWcv5S27dvr7V1tcK/cii1FUCKex1U69RFFfxOJabiLi4zPuz++++vtUsFklNLO68BQHy//A9R85fSLOBXh6Lf/iLNAjiRVNCaFHDgwIFACBJoIH3mmWdKHRodHa24law4o21oaOj733+wzL0mt279yoEDs9iVMlB5dfc6GLd+/fpSS90Vtbe3187+jFUU7sltbW0txmRjY2PlJIA7dny9/OQo3IAZ2K8jrDijra2t7amnntq58+4yA8T77rt32m0HqrvXQTab/exn/7ytra2yaGPjxpu2bAltZbt1a09ya/ZVLPwrh1KTUquy10Fl3aZVOfW4wObOyenuvmHjxtD+6bfc8sUavFQgOSI2AOaXsYdSjtje/N/TPDsnmApak0opFAo7dnwt8IAyQ65JnnzyxzEDo5aWlpaWlu7u7p07d85YQy6Xy+fzZd6azuVeB+PCd5uZTOa220LRRlW0t7dX9mpOVSgU7r//vve97/0tLctOOaUxcMmFe3I3b9488ZkpFAoDAwOBlGfjxi/86EcDZV7h4QbMUkvgl6mhoWHFihUrVqwYGhq6445/P2NMVmq5+mPHQj2DM8pkMueee+6yZS1nnXXW2WefHXMWZLhFsbW1tTZT4KefDoWzpd56VdnrIBzjlno+A6dua2sr89Tjnn/+yKxel7GxsYGBgdNPP72lZdkZZzRVtlVCuJu+tbV17dqymklh3hCxATC/5J+L3n4rekd6/8D9KtR3BtVVxb0OHnrooUDeVLGprVv5fP711//lm0ePHnvzzTeLXwfuD5ubF/b0bOvu7t60aVM4xXj99bEy7xXncq+DceHZLtNuKDGXAtP6pjUwMNDb2zvxO8X5aBdeeFFzc/MHPvCB8axnVj25xQlizc3NnZ3XlfqRzZtv+8Y3vlnOLK1AA+a0S+CPjY395jf/snXGeHrS3NwcmJJZnHR56NChrVu/EngrlUpVwhHkvn375nIq0Ix56JxVMiuBSWGlPg/DvaXl73UQvryn3bI2/FFQQf9y+O8y1UMP7Z365l28ePE55yyd9OYNCC8nd9NN/9OsSoJ5QMQGwLzz21eikz+Y2tnfOJjaqTnBVHGvg3w+f+edX41d0TQmBQqjo8dXr15d6sEtLcvCOUJz88Lvfvd7l1/+qUCEMTT0XJlhxOHDhwNHzz47kYgtoabFapltzPqd7/zVpO8UX/Fi+NvV1TW+0H4FPbktLS1dXV2TUoCJJxoYGJhx2s5s9zo4cOBAqdlzmUxmxjbkFStW3H///YGLPIqi0dHjUy/ROV4WMKymihlXzKQWLHjPtLlqoVAITAor9Xk4MUudqswNBwqFQvi3HdMWXNlHQWAK6qzy8UKhsHfv3knfHBwcHH8Oy+zFfuqpvwscnTZbhPnNdgcAzDu/+j9SO/U/vZTaqTnxVHGvg3vuKbnOWnwTo8D4N+cNDQ3hzeleeeXlMoeqYptt+RJtWizTBz/4wcDR8AymiYaGhsIzCq++ek3xi4p7cq+55trA0vs7dnytUCiEi5ztXgeBVKXM/LG5eWEFG7PO/bKAAakXMzQ0dODAgV27vrV5823d3Z8777xzzzvv3NWrV69evbrUCxrutF2+fHkFZZx66h+W87CnnnoqcLTUVLiqfxQU2+TLfPDAwED4ei7zGZvtFFGY90RsAMw7b72W2qn/KdR3BtUVXnjoQx/6UJnjjI4eDy/AH1P5E6PC0zrGrVy5MnD0fe97f5mnq2Kbbflq4Y70vPNCKcm3v31/OYMUCoXA/rNRFLW3t4/HlBX35IYT1Vwu99BDD4XrnO1coXCqEm7uG/fpT89u/alUlgWs5WL+8i97t2zZ3Nvb29/fP2lu2imnTN9JHZ6UWtl0qjI3RN69+4HA0fPPP3/a71f2URDuXX3gge8Fjo7L5/PhlTe7urrK6Vif7RRROBGI2ACYd36d4iy2/5jaqTnxVGs3usBWoVVR/qyoMiegPfHEEzHK+Z0qttmWr0buSMNbzfb39w8Nheb3Fd144+fDU9gmxkzhayC8YnpbW1tgItt9990bnshW3Z7HMjOX73//wVkNm8qygKXUQjGBls9TTjll2u8/8sjDpX6ko6OjsvA6HCIX7dr1rUC141vlTlLxR0G4d7W3t3fGFLhQKNx886bwbz4uv/zy8CBFs50iCicCERsAQF2q0kZ4Q9XaXLKUSf1QgUaz3t7eGVfsnnHn0zKXT6pim235auSOtKmpKRBaRVF0xx3/PvxChGOFKIqy2ezEnQHi5FwNDQ1r1qwpdTSXyw0MDAR+fLY9j2ecEWoQLidzmfE9NfXvGyeCrLqaKmaqaWerjYyMBBKrSy8tuTtnqTlxRcPDw+HE6sCBA6XWCixav37DtN+v+KNgxul4PT09gXbRQqFw442fD79529vby4yea3xlSUiF7Q4AAOpP+Mav/I3wwpHB1q09ZY7z/PNHSnWbTgprVq68OHCDt25dx5YtXyq1zHY+n9+2rScw/yKTyZQZsf385z8PHA3P86pY7dyRrlmzJhANDA8Pr1vXcccdX526gebIyMiXvrQlPH8tiqLt27dP/GMgcipnba8NGz4TqHbHjq+1tbVNO02pgp7HxsbGbDZb6i84PDy8fv267du3l8ogRkePh99THR0dU79ZU9sL1EIxra2tpT4ldu9+YNLnw9jY2Ne+9r8GRlu6tGRiVYybAxdJT0/P5s2bp/1bHzp0qNTOGEWZTOaCCy6Y9lDFHwUNDQ2BHQ+iKBocHLzqqivvv//+qTUPDQ3deusXZ+zcv+22cneMrYWVJaHWiNgAAOrP0aOhtb3LjJkOHDgQyEq6urpm3K5xXEvLslIRW39/f0/PtvE/trW1BXYvzeVyGzd+IZvNfuxjHzvnnKWnnXba4sWLirejgRRvXGC60yQn7F4HReHQKoqiXC7X2Xlda2vrypUXf/jDH/7Vr371s5+98Oyzz4bnvxR1dHRMvL0PT4hbufLiGQdsbGwMxAq5XO6pp56aNpatrOfxs5/980B0Mjw8vHr16tbW1o9+9KPve9/7m5ubTz311OLMr+98569mDB+nnVGV+vYCEwWKSW6Nwkk++tGPlrrSBgcHV61qb2tru/TSttHR0VdeeXnv3r2B2GjGLtFw3Dw4OLh69eqOjo5zzlk6/lq/8cYb991374xZ1bXXXlfq1HE+Crq7u8PTJHO53OrVq9vb25cta/nwhz9cfJYee+yxGS/OKIq2bu0pf5GBWlhZEmqNiA0AoP787GcvBI6eddZZM44Q7rjMZDIbNnym/HrC7XX5fH78tq2pqSkwS6hoeHi4nLvBqcqv+YTd66AoHFqNGxwcLCdTmyibzU7aoKAqPbmf/vTaQLU7d949bcRWWc9jeD+NogqemWhK/2zR2NhY6tsLlFlMQmsUThXetCSXy/X19ZW5Scv69evDD7j44k+E4+YoiirYECabzV599dWljsb5KGhuXjjjR2gURf39/bNdBKC1tbWtrWRT7SQ1srIk1BoRGwBA/Ym/18FDDz0UuJfeuPGm8ucyRFEUfvDrr49NfEB39w0bN36h/MHLdMstXyyz5hrc6+CSSy6ZcYSxsbHt2++a9M2mpqZNm26uoJ5Nm25+5plnyt/vtRyZTGbnznsmBQRV6cltaWkJNPQNDw+PjIxMnbxZWc9jY2NjR0dHEtvsTuqfLQpHkOHtX6sufh46NDQ0dbeHCy+8qPwpsVH1mqbLWVZsyZIlt9zyxcDU2spMfSOMy+fzMcOp7du3r169uvLippPJZL7xjW+WH/SHl5O74II/qUZRUH9sdwAAUH9i7nWQz+cDt5SZTKb8uQzjApO/Ji08tGLFimlXpIqjtbU1MGdkkhdeCM0BTGivg2PHQr295WzU+MILL/RPMeMGEaU0NTVt2fKlyn62lDvu+OrUHttq9eRee+11gaPf/vb9U79ZcQPmxo03ZbPZMgsrU1dX17RxTyrLApYSv5iDBwemXqWnnXbarMpobl5YlQ7Z7u7uch529dVXV/fl3rq1J3Bhh/uXywmnmpsX3nLLFyuprIRMJrNnT9+sJtKGl5NLfVsMSIuIDQCgzsTf6+Cee3YGjm7ceFMFTYuBW8o33nhj6imqeE/b2to6q/kX4TbbD33oQ9UoarL4GzVOW3b5W1tMtWLFiq6urop/fKJMJvOjHw1M7YKMqteTe8UVVwSO9vf3T9pIsYK9DsY1NDTs3HlP+bXNqKurq7Pz+mkPpbIsYCnxi5m2BbKCwGXiAo6V2bq1p8zNGar7cm/d2hOesleVPVvXrl1brXX6ivnabK+0WtgWA2qQiA0AoM6Epw/MuNfB6OjxQBNcNputYApbFEXnnFNy276p9+0NDQ333ntfVVY9m22+FlWjzbYC8e9Ipy27zK0tSunsvD5+ytba2lrqFr2KPbmNjY3hTOHRRx+d+McXX3wx8OAZpw02NTXt2dNXlSA4kK9FKS0LWErMYkq1QFYQuDQ1NZW/o/FUs9qtpXi6HTu+XvHpijKZzK5d98543mqFU9/4xjfjv3nb29v37/9BBUluTe3RAbVDxAYAUGfCu9EtWjTDJIidO0NT2G699S8qW3e/ubm51KFpb8YaGxt7erbt2PH1TCZTwemKtm7tCax5VErMNtvKxLwjLRQK05Y948s9o87O63ftureyVyGTyRRfglK36FXZ62Dc+vUbAkfvu+/eiX8M9zyeffbMnblLliz57ne/F6cjrzg/KJCvpbIsYCnxi5m2BbLiwGXVqlWVRUi33PLFwHNeyooVK/bt21fxx1E2m92zp2/aiZyTVCucamho6Oy8vuIgshgI9vRsq+ADP84UUZjfbHcACTtzXfRH/zqdU/9/I9HxL6dzahKy6IHUTv2LO6J8aNYM9cpFVZ/i7EY3NDQUmKgy7Y6HZVqw4N2lDuVyuUKhMG1hK1asePjhRx599NFHHnm4/F1EM5nMmjVrNmz4TAUzzuK32VYg/h3ptIuLV2sf0paWlv37fzAwMLBly+YyfySTyWzceNPKlSvDL8HTT4e23ZztQmPLly8PHM3lckNDQ+MXcFUaMBsaGtauXXvRRRfu379/79695e8Okc1mP/vZP29rawu/QNWNIGOKX8y0LZBxApfOzus3bPjMtm09ZW6O2d7e3t3dXXGXYnPzwuIbYceOr5X/Wnd1dV1++eVlnrTq4dSqVatWrlz5wAPfm3Ff1HHZbLa7+4YLLrig4k+P8HJy5awsCfPVO95+++20a4BZ+uk70q5gNhY9EJ05w2bhSfmnl6K/r6ulRj9yLDr5g3N6xtd2R8dCvw+vOR9L7xP72ProtT2pnX22zlwXLdqdzqldVOVzUcVw4MCBUoeam5vDGdnQ0NDo6Gipoy0tyyq+Oy0UCgMDA6WOzpjFRFE0NjY2MDDw3HNDY2Nj087Yam1tXbny4uXLly9atKjim8OxsbGf/OQnpY6ef/75Sax+lc/nn3jiiVJHy3naDxw4MDX/CncgVqBQKBw7duzxx//msccemzbxbG9vX7asZfny5WU2qIavt1m18hUdOnTozTffLHV0yZIl44XFeZuUMjIy8vjjf/PSSy8dPXq01PNz4YUXlf8+Gh09Huj7LuddU0Xxi9m8+bapWdiuXfdWHNxPrG3//v3PPvvstJ8Mxae9um/ekZGRw4cPP/HE49OeMZvNLl68+JOf/NTy5ctn9RrF/ygIjPziiy8+/fRgqSx4thdnQE1dt1BTRGzUIRFbmURsM5KGlE8aUiYXVflcVJQhn8+//vrYggXvqcpcrbpWfCpeffWXnZ3/srHmnj19Mddim1Fx0t8ppzTO8br79WJsbOw3v8lb3L2o+Gzs3r174mqPTz31k6q/f4uX5Vx+MhQKheJM0jp6rYvP0hlnNAm8YM5oFAUAoEY1Nja6OSwqPhW7d/9L1JvJZJLO16K6ChRS0dTUFEXCx99pamoqFE6fOJu1o6MjiRRs7i/LhoaGunsv1F3BMA/Y7gAAAGrd0NDQ+vXrJk4OWrNmTYr1wCSFQuHAgQOXX/6piV2Kl15ayfbEAHXKLDYAAKhpo6PHJ/aHRlGUyWSuuebatOqBqaZul9He3h5/FTaAOmIWGwAA1LSpK4vff//91qejpjz55I8n/jGTydx++1fSKgYgFSI2AACoac8/f2T869bW1n379llliVrzzDPPjH/d0dHx8MOPSIGBE41GUQAAqGl/9Ed/1N7efuGFFy1ZsmQOtjiA2crn8+eee25TU9M55yw9//zz7T8LnJhEbAAAUNM6O69PuwQIaWxs7OnZlnYVACnTKAoAAAAAsYjYAAAAACAWERsAAAAAxCJiAwAAAIBYRGwAAAAAEIuIDQAAAABiEbEBAAAAQCwiNgAAAACIRcQGAAAAALGI2AAAAAAgFhEbAAAAAMQiYgMAAACAWERsAAAAABCLiA0AAAAAYhGxAQAAAEAsIjYAAAAAiEXEBgAAAACxiNgAAAAAIBYRGwAAAADEclLaBQAAJ6RFu6NFu9MuAgAAqsMsNgAAAACIRcQGAAAAALGI2AAAAAAgFhEbAAAAAMRiuwMAgBNdPp9//fWxo0ePvfnmm6+88vJLL71U6pEXXnhRFEXNzc0LFrz7jDOaGhsb565KiG109HgURUNDz0VR9OSTPy71sA9+8IPve9/7oyhasmTJqaf+4YIF72loaJizIgGoUyI2AIATTqFQOHbs2MjIyJNP/ri/v7/8H5z04Ewmc+655y5b1rJ8+fIlS5ZUu0yIK5/Pv/jii08/PfjYY48NDw9XPE42m/3Yxz52wQV/cvbZZzc1NVWxQgDmDREbAMCJolAoHDly5ODBgb6+vqoMmMvl+vv7i7lbJpNpa2u79NK2pUuXpj7l58CBA8kNvmrVqmm/n8/nn3jiiYRO2tzc3NLSktDg80/xtfjOd/4qTqw20fDw8PDwcPGNk81mr7zyqlqIlRO95FpaljU3L5zxYYVCYWBgIIkCSr3RyjE0NDQ6OlrFYqqlzGd1RqOjx4uTMauigqqq+wyvXLnSnGjmBxEbAMD8Nzp6fPfu3dVK1qaVy+X6+vqKp+jq6rr88surcidZmS1bNic3eKk7/9dfH0vuvO3t7VWM2M4779xqDTXV008/k9zgMxoaGvrLv+wdHBxM7hTDw8N33vnVKIoymczGjTe1tbWllSkneslt3dpTzlv42LFjSdTQ0dERJ2L7/vcfnNX83DlT5rM6o6Gh56r4tLe2tu7cec+sfqS6z/C+fftEbMwPtjsAAJjPRkePb9582+rVqxPN1ybp7e1dvXr15s23FZe+gjkwNDS0fv26zs7rEs3XJsrlclu2bL788k/t2vWtfD4/NyetNY8//jdJDHvppW1JDMu0BgcHT9gLGKpLxAYAMD/l8/liuJbWbI7+/v5i0DY2NpZKAZwgRkZGiuFatdpCZyWXy/X29n784xc9+OCDhUJh7gtI1969e6s+ZiaTWbp0adWHJeDw4cNplwDzgYgNAGAeOnDgwFVXXVkLrVL9/f2XXdaW6OJonLAKhcL27XetW9eRSrg2yZ13fvXP/uwzJ9TMzZGRkVwuV/Vh16xZk/p6jiea3bsfSLsEmA9EbAAA80qhUOju/tyWLZuTuPWt2JYtm7u7P2c6G1U0MjJy+eWfmssO6BkNDw+vXr36xJnOltDUp4sv/kQSwxKgVxSqQsQGADB/jI2NXX75p+ZsLapZGRwcXLeuY2RkJO1CmA+GhobWreuoqRx53J13fvXGGz9/IqRsjzzycNXHzGQyqW/VemLSKwrxidgAAOaJkZGRmg0dinK53Lp1HUNDQ2kXQn3btetbnZ3XpV1FyODg4I03fn5+T9scGxtLoj93zZo1VR+TcugVhfhEbAAA88HY2NgNN3TXcr42rrPzOikbFXvwwQd7e3vTrmJmxWmb8zhlGxgYSGJYXaJp0SsK8YnYAADq3tjYWI3PX5uks/M6HaNUYGho6M47v5p2FeUqTtucrx2jSXSJZrNZXaIp0isKMYnYAADqW3F/gzrK14puuKF7Hk/wIQmjo8drvD90qlwu9+UvfyntKqovn88n0SV65ZVXVX1MyqdXFGISsQEA1LeHHnooiXvdpOVyuc2bb5uvE3youkKhsGnTprSrqER/f/+BAwfSrqLKEpru1NbWlsSwlGlwcNBvPiAOERsAQB0bGRmpo765SQYHBxNazon55/7776vHKLloy5bN82yVqySmO2Wz2aampqoPy6z4TIY4RGwAAHXsS1/aknYJsezY8TUT2ZjR6OjxutjiIOCBB76XdglVk8/nBwcHqz6sLtFakMQSe3DiELEBANSrQ4cO1e+8nqJcLmfSBDPauXNn2iXE1dvbO28msr344otJDKtLtBYMDw/rFYWKidgAAOpSoVDYuvUraVdRBTt2fC3tEqhpo6PH+/v7066iCubNRLaDB6sfi+sSrR1+7QEVE7EBANSlI0eO1N0uotPK5XIjIyNpV0HtmgdT2Ir27t2bdglVUCgU+vr6qj5sd/cNVR+TyugVhYqdlHYBAABU4i//MtmlqTKZTFtb2znnLH3jjTeee24o0WlEhw8fXrJkSXLjU7/y+XzSU9haW1s/+tGPvu9973/llZefffbZJFYZK8rlcmNjY/U+V+vIkSNJDLt8+fIkhqUCxV7Rer9QIRUiNgCA+pPQcuPjdu26t6WlZfyPa9eu3bTp5nXrOhKaN/fIIw+vXbs2iZGpd4cPH05u8Ewm8/DDjzQ2Nk785tDQUGfndQmd8Sc/+cmqVasSGnxuPP109T95WltbJ70KpGtgYMBnMlRAoygAQP1JNHfYurVnYr5W1NTUtGdP9bvDioaHh+fNSvBU1w9/+IOERs5kMnv29E1NdlpaWnbs+HpCJ3300X0JjTxnkmh3Xb9+Q9XHJA69olAZERsAQP352c9eSGjkTCZTapZNU1NTa2trQudNaI9C6l1yXaLXXntdqVa45JoWE518OgdGRkaSmMqqS7TW2FcUKiNiAwCoP4899lhCI69ZsyZw9IorVid03tHR0YRGpn4lepMfiHUaGxszmUxC5x0dPZ7QyHPg8cf/pupjtre36xKtQfYVhQqI2AAA6s/w8HBCI7/vfe8PHD3ttNMSOu+TT/44oZGpX4numRsO0c4999yEzvvqq79MaOQ5kES4/+lPW/OrFukVhQrY7gAAoM4kumxZc3Nz4OjixYsSOu/Ro0cTGpn6NTIyktzg4Q0Tk9tOcXR0dOpah3VhbGwsiXB/6dKlVR8zUfv2Vb6g3hln1M02ncPDw6Ojx5ubF6ZdCNQTERsAQJ15/fUEu+cWLHh3coMHJDcvDypwzjlJ5T7PP3+kTjcVTaJzsKOjo6GhoerDJurESZ3279/f2Xl92lVAPdEoCgBATbCpKJMk1z6czWYTGnlG9buKfBKdg5de2lb1MamWJHaPhflNxAYAUGeOHj2WdgmJSHR2Hky0ePHitE79zDPPpHXqOPL5vC7RE00ul0u0WRvmHxEbAECdefPNN5MbPNwDdeJ0SEFCEt3DITmHDx+u+pj12CV6okliD1mYx0RsAADUhKGh59IugdpSvz2V88/u3Q9Ufcx/82+urPqYVJdeUZgVERsAAFCLBgcH0y4hEXUXHebz+aq/FplMZsmSJdUdk6rTKwqzImIDAKgzr7zyctolAJX7zW/qbGePF198sepjrlmzpupjkgS9olA+ERsAQJ156aWX0i4hEW+88UbaJQDTOHhwoOpjXnzxJ6o+JknQKwrlE7EBAFATnntuKO0SgMkKhUJfX191x9QlWkf0ikL5RGwAAABM78iRI1UfU5dofdErCmUSsQEAAMydo0ePpV3CLDz9dPU3nbj6ahFbPdErCmUSsQEAAMydN998M+0SZqHq8Uo2m21qaqrumCRKryiUScQGAADUnHy+zrbdnJdGRkZyuVx1x7zyyquqOyBzQK8olEPEBgAA1JzXXx9LuwQSCVba2tqqPiZJ6+3tLRQKaVcBtU7EBgAAwDQee+yx6g6oS7R+JbHxBcwzIjYAAAAmGxsbGx4eru6YukTr18GDA2mXALXupLQLAACAejI6enza79fXNpEwo4GB6kcqV1xxRdXHZG709fVt3HhTQ0ND2oVA7RKxAQBp+NWh6J/+Y9pFlO3kfxW9a0XaRVArVq9enXYJMBceeeTh6g7Y2tra2NhY3TGZS0eOHGlpaUm7CqhdIjYAIA2/3Bm9tiftIsp25joRG3BCef75I1XvEl2/fkN1B2SOHTw4IGKDAGuxAQAA8HuS6BJdvnx51cdkLvX19dlXFALMYgMAAOD35HK56g44b7pEN2++rbIf3LTp5nmwm6peUQgQsQEAAJCsedMl2t/fX9kPdnd3R1HdR2x6RSFAoygAAADJ0iU6P+gVhQARGwAAAAnq6OiYH12iRFF05MiRtEuAGiViAwAAIEGXXtqWdglUzcGD1d8KA+YHa7EBADALW7f2JDRyc3NzQiPDbLW0LEvuUm9pWZbQyDVr6dKlaZdA1fT19WWz2bSrgFokYgMAYBZWrVqVdgmQuObmhc3NC9OuYp7o6OhoaGhIuwqqaXh4OO0SoBZpFAUAACAp55xjChtwQhCxAQAAkJRHH92XdgkAc0HEBgAAQFIGBwfz+XzaVQAkTsQGAABAgg4fPpx2CQCJE7EBAACQoKee+ru0SwBInIgNAACABPX19RUKhbSrAEiWiA0AAIBkHTlyJO0SAJIlYgMAACBZBw8OpF0CQLJEbAAAACRrYEDEBsxzIjYAAACSlcvlRkZG0q4CIEEiNgAAABL3+ON/k3YJAAkSsQEAAJC4vXv3pl0CQIJEbAAAACQul8uNjY2lXQWTtba2pl0CzBMiNgAAAOaCTQ9q0BVXrE67BJgnTkq7AAAAqCft7e3Tfn9sbGxwcHCOi4H68sgjD69duzbtKmIp9Qkwo1NOaaxuJVXU0dHR19eXdhVQ90RsAAAwCz0926b9/ujo8dWrTQZhnmhvb+/v76/6sMPDw2NjY01NTVUfec6U+gSoa5de2iZig/hEbAAAzMLo6PGERj7llMa6vvFmPsnn86+/ntSqYWec0dTYWLsTmoouvPCiJCK2KIpeeOGFFStWJDEyFVu6dGnaJcB8IGIDAGAWkpuo1d7ePi+nh1CPnnjiiS1bNic0+NatPatWrUpo8CpKaCLb7t0PiNhqTUNDQ0IvN5xQbHcAAADAZJ/85KeSGHZwcDCfzycxMnEk9HLDCUXEBgAAwGRnn312QiMfPnw4oZGp2PLly9MuAeqeiA0AAIDJmpqaMplMEiM/9dTfJTEscTQ2Nra2tqZdBdQ3ERsAAADTaGtrS2LYvr6+QqGQxMjEccUV9kSGWERsAAAATOOCC/4koZGPHDmS0MhU7Pzzz0+7BKhvIjYAAACmkdxybAcPDiQ0MhVramrKZrNpVwF17KS0C4D57tiG6NiGtIsAKOGn70i7AoDpNTcvTLsEfrccWy6Xq/rIAwMDmzbdXPVhienKK6+6886vpl0F1Cuz2AAAAJheQsux5XK5kZGRJEYmjosuujDtEqCOidgAAADmTnNzc9olzMKllyYSsUVR9Pjjf5PQyFSsuXlhQtvIwolAxAYAADB3Fix4d9olzMKHPvShhEbeu3dvQiMTx5o1a9IuAeqViA0AAIDpNTY2JrQEfi6XGxsbS2Jk4rj44k+kXQLUKxEbUDNOqqff6AInllP+67QrOCEsW9aSdgnANC655JKERh4YsK9ozVmyZEnaJUC9ErEBNeMPTk27AoAS/ovaut+48MKL0i4hEaeffnraJQDTOO+81oRGfuSRhxMamTg6OjrSLgHqkogNAACoRa2tSSU7zEpyy7ENDw/rFa1Bye1xAfObiA2oDWeuS7sCgNIaP5J2BXAiampqSruERCxY8J60S5id5JZji6LohRdeSGhkKrZ06dK0S4C6JGIDasOpf5p2BQClnfLHaVfwe0477bS0S0hEc3Nz2iXAXGhoaEi7hFlLbjm23bsfSGhkKtbQ0NDe3p52FVB/RGxAbfjDj6ZdAUAJjcuid5yUdhG/Z/HiRWmdenT0eHKDL1hg3xt+zwc/+MG0S+B3kttlcnBwMJ/PJzQ4FfvkJz+VdglQf0RsQG04Jak1PgDiOu3itCuYU4VCIe0S4Hfe9773p11C9dXpAnOLFiWY7B8+fDi5wanM8uXL0y4B6o+IDagBp18anWTmAlCr/svOtCuYLNGFnF599R+TGzys7haoggrU6QJzDQ0NyYWDTz31dwmNTMUaGxvrNA6GFInYgBqw4Ka0KwAo4Z3vrcG9DupxIadyzNe/FxVraVmW0MjPPPNM+AGvvPJyQqeu3+7XlSsvTmjkvr4+82dr0BVXrE67BKgzIjagBpx+WdoVAJTw3tvSrmB6aU0uePXVXyY0sukSTHXKKY0JjZzL5cIPeOmllxI6df12vybaOXjkyJHkBqcy559/ftolQJ2prbV7gRPRghtrbR1xgH9x5n+XdgXTS67X7OjRY83NC0sdHR0dTei8ddo9R6ISvSoKhUJg4uTY2FhC563fnXMTXY7t4MGBlpaW5Mavos2b4/7q5dOfXlsXf9mmpqZsNjs8PJx2IVA33NYCaTvr36VdAUAJC2+v2ZUiL7zwov7+/iRGfvPNNwNHk+ueu/DCixIambrW2to6ODiYxMivvvqPgTQ5oZNG9bxzbnE5toSemb6+vk2bbk5i5KqL/9l74YUX1UXEFkXRlVdedeedX027CqgbGkWBVC28PfqDU9MuAqCE92xKu4KSlixZktDIjz66L3D0scceS+i89Tu1h0QtXrw4oZGPHj1W6lByU9iiKArkerUvueXYoigaGRlJbnAqc9FFF6ZdAtQTERuQqhq+fQVOdLX9O4CzzjoroZEHBwfz+fy0h8bGxpLrGPrQhz6U0MjUtQsu+JOERv7hD39Q6tBPfvKThE5a72sOJhq4PP743yQ3OJVpbl6YyWTSrgLqhogNSM+iB2r59hU4ob3zvdF7/23aRYQ0NjZms9mEBr/55k1Td/crFArd3Z9L6IzZbLaxMamF7alrZ599dkIj9/f379r1ranfHxoa2rJlc0InTXQW2BxIdAre3r17kxuciq1ZsybtEqBuiNiAlJx+aXTm+rSLACgh+6Pa34nlyiuvSmjkwcHBG2/8/KFDh0ZHj0dRNDp6/NChQzfe+PnkprBdcsklCY1MvWtqakpuEk1vb++uXd8aGhrK5/OFQmF09PiBAwduvfWLCZ0umhdtd+3t7QmNnMvlip851JSLL/5E2iVA3aj1/zsC89M73xv9V4+kXQRACe//ZtT4kbSLmNny5cuTG3xwcDC55d6ncgtHwJo1a3p7exMavLe3N7nBp6rrhdiKkttrJYqiH//4ybVr1yY0OJVJdCdZmGfMYgPSsHivFlGgRp1+afTu/yHtIsoyb257MpnMvPm7kITzzqvv9cvGdXV1pV1CFbS0LEtu8EceeTi5walMQ0NDR0dH2lVAfRCxAXPu/d+M3rUi7SIAplOcY1vzLaJFDQ0N8+OOfePGmxoaGtKugtq1dOnS+bHg+oYNn0m7hCpIdCLe8PBwotu5UplLL21LuwSoDyI2YG4tvD1acEPaRQBM553vjc5+rr7m2M6DO/ZMJtPW5uaNkIaGho0bb0q7iri6urrmzZ4eyS3HFiW5nSsVW7p0adolQH0QsQFzaOHtUfOX0i4CYDrFfO2kd6ddx+w0NjYmeq87B0xhoxzzIIe9+ur5sy3jJz/5qeQGf/TRfckNTmUaGhpaW+dJvzYkSsQGzJUFN0bv/bdpFwEwnfrM14q6u7vTLqFyra2tq1atSrsK6kBDQ8MttyS40WfStm7taWpqSruKqjn77LOTG3xwcDCfzyc3PpVZv35D2iVAHRCxAXNi4e3R+79eL8sbASeWes7Xoihqbl5Yp9FDJpO5667taVdB3bj66quz2WzaVVSivb19nkXJTU1Nia6Od/jw4eQGpzKJ7mEN84aIDUjekv36Q4Eadfql0dKR+s3XitauXVuPLTx3371z3ixNxRxoaGjYufOetKuYtUwmc/vtX0m7iupLtHX3hz/8QXKDU5nGxsZ6/IcG5piIDUjSO98bffjJ6I8SXLADoHJnrouW/LC+9jco5a67ttfXlou7dt27ZMmStKugzjQ1Ne3Y8fW0q5iFTCazZ0/fvFxt8IIL/iS5wfv7+wuFQnLjU5mVKy9OuwSodSI2IDGnXxqd/Vz0rhVp1wEwnUUPRIt2z5sG9sbGxj17+uolZdu1696Wlpa0q6AurVixoqurK+0qytLa2rp//w/m0xJsEyW6HFsURUeOHEl0fCowD3YdgaSJ2IBkLLw9WvLDeu+9Auand743+six6Mz1addRZU1NTbWfsmUyGfkaMXV2Xr9r171pVzGD1tbWb3zjm/Ny/lpR0suxHTw4kNzgVKapqalO10OEOSNiA6qtuHB485fmzdwQYF5ZcGP0kZejkz+Ydh2JKKZsNXsL1NraumdPn3yN+FpaWmo5Zevq6prf+VpRonOa+vr6khucil155VVplwA1TcQGVNXC26OPvBw1fiTtOgCmaFwWnf3cvN/duKmp6bvf/V5HR0fahUx2yy1f3LnznvnaNMfca2lp2bdvX60FysXF1zo7r5/3+VoURZdemmzb4MjISKLjUwH7ikKYiA2oksZl0UeOmbwG1Kj3fzP645+eIL8AaGho2LTp5tpJH7LZ7L59+9auXZt2Icw3zc0Ld+/es3VrT9qF/E57e/v+/T84cfbx+NCHPpTo+I8//jeJjk8FlixZUuPLEUC6RGxAbO98b7TogejsofnaeAXUtzPXRS2vRgtuONF+AdDcvPC73/3eLbd8McXboUwms2PH13fv3tPcvDCtGpj3Vq1a9aMfDbS3t6dYQ3t7+759+3p6tp0Ik9fGNTY2Jprj7927N7nBqdiaNWvSLgFql4gNiKEYrn3k5fm3ajgwH5y5LvrIsWjR7hN265WGhoa1a9fu3/+DHTu+Pscz2jKZzNatPfv3/2DFCvtKk7impqaenm1/+7c/7urqmuNMeTxcOzFz5EsuuSS5wXO53Ojo8eTGpzIXX/yJtEuA2nVi/ToXqJp3vjd63/aoae2JNisEqA9nrovO+nem1hY1NDSsWLFixYoVQ0NDBw8OJL2IeEdHx6WXti1duvSEms5DLWhsbOzsvP6aa64dGBh49NF9g4ODyZ0rk8msWbPm8ssvPzGTtXHnndfa29ub3PhDQ8+d4M9wDVq0aFHaJUDtesfbb7+ddg0wSz99R9oVnNgal0Vn/S/R6ZfNh3Dttd3RsQ1pFzEbH0vvE/vY+ui1PamdfbbOXBct2p3Oqevuopp/Ft4eZT4rXAsbHT3+4x8/+cQTj1cxg5CsUWsKhcKRI0eefnpw7969uVyuKmNms9lLLrnk4os/ceIsuAZA+URs1CERW1rm341r3aUhIrYyidhOQPMp/Z9DhULh1Vf/cWjouVdeefmll146evTo8PBwOT+YzWYXL168bFnLWWeddfbZZ9snlBo3NjaWy+VGRkaef/7I2NjYM888U2bo1traunjx4nPOWbpkyZKzzjqrsbEx6VIBqF/+GwrM5Mx10ZmfiU5bGf3BqWmXAvD7GpdFTVdHZ1x1gmwVWnUNDQ3NzQun9mEVo7epjz/llEZpGvWoqampqalpyZIlq1atmvj9sbGx3/wmP/XxCxa8x3xMAGZLxAaUsODGqGltdOr5poQANadxWfRfXh+d+d+dsPsYJK0YvaVdBSSuqakpiqTGAFSHO2fgP3vne6PTPhH90b+O3vWn86obFJgfTr80etdF0Wn/bfSH/41JtQAA1BoRG5zAipnaqX8a/ReLo1PPMxkEqC2nXxqdcnZ06vlR40eiU/7YjFoAAGqZ/63CfHfmut99cdK7o1PPj6IoetefRlFknhqQvsZlUeM5v/v61D+NTjozOvlfRSefFZ30bvPUAACoL3YUBQAAAIBY/iDtAgAAAACgvonYAAAAACAWERsAAAAAxCJiAwAAAIBYRGwAAAAAEIuIDQAAAABiEbEBAAAAQCwiNgAAAACIRcQGAAAAALGI2AAAAAAgFhEbAAAAAMQiYgMAAACAWERsAAAAABCLiA0AAAAAYhGxAQAAAEAsIjYAAAAAiEXEBgAAAACxiNgAAAAAIBYRGwAAAADEImIDAAAAgFhEbAAAAAAQi4gNAAAAAGIRsQEAAABALCI2AAAAAIhFxAYAAAAAsYjYAAAAACAWERsAAAAAxCJiAwAAAIBYRGwAAAAAEIuIDQAAAABiEbEBAAAAQCwiNgAAAACIRcQGAAAAALGI2AAAAAAgFhEbAAAAAMQiYgMAAACAWERsAAAAABCLiA0AAAAAYhGxAQAAAEAsIjYAAAAAiEXEBgAAAACxiNgAAAAAIBYRGwAAAADEImIDAAAAgFhEbAAAAAAQi4gNAAAAAGIRsQEAAABALCI2AAAAAIhFxAYAAAAAsYjYAAAAACAWERsAAAAAxCJiAwAAAIBYRGwAAAAAEIuIDQAAAABiEbEBAAAAQCwiNgAAAACIRcQGAAAAALGI2AAAAAAgFhEbAAAAAMQiYgMAAACAWERsAAAAABCLiA0AAAAAYhGxAQAAAEAsIjYAAAAAiEXEBgAAAACxiNgAAAAAIBYRGwAAAADEImIDAAAAgFhEbAAAAAAQi4gNAAAAAGIRsQEAAABALCI2AAAAAIhFxAYAAAAAsYjYAAAAACAWERsAAAAAxCJiAwAAAIBYRGwAAAAAEIuIDQAAAABiEbEBAAAAQCwiNgAAAACIRcQGAAAAALGI2AAAAAAgFhEbAAAAAMQiYgMAAACAWERsAAAAABCLiA0AAAAAYhGxAQAAAEAsIjYAAAAAiEXEBgAAAACxiNgAAAAAIBYRGwAAAADEImIDAAAAgFhEbAAAAAAQi4gNAAAAAGIRsQEAAABALCI2AAAAAIhFxAYAAAAAsYjYAAAAACAWERsAAAAAxCJiAwAAAIBYRGwAAAAAEIuIDQAAAABiEbEBAAAAQCwiNgAAAACIRcQGAAAAALGI2AAAAAAgFhEbAAAAAMQiYgMAAACAWERsAAAAABCLiA0AAAAAYhGxAQAAAEAsIjYAAAAAiEXEBgAAAACxiNgAAAAAIBYRGwAAAADEImIDAAAAgFhEbAAAAAAQi4gNAAAAAGIRsQEAAABALCI2AAAAAIhFxAYAAAAAsYjYAAAAACAWERsAAAAAxCJiAwAAAIBYRGwAAAAAEIuIDQAAAABiEbEBAAAAQCwiNgAAAACIRcQGAAAAALGI2AAAAAAgFhEbAAAAAMQiYgMAAACAWERsAAAAABCLiA0AAAAAYhGxAQAAAEAsIjYAAAAAiEXEBgAAAACxiNgAAAAAIBYRGwAAAADEImIDAAAAgFhEbAAAAAAQi4gNAAAAAGIRsQEAAABALCI2AAAAAIhFxAYAAAAAsYjYAAAAACAWERsAAAAAxCJiAwAAAIBY/n+jRbfrkhu8awAAAABJRU5ErkJggg==" alt="bhc chicken logo" />
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="openTab(event,'origin')">원산지</button>
+    <button class="tab-btn" onclick="openTab(event,'nutrition')">영양성분</button>
+    <button class="tab-btn" onclick="openTab(event,'allergy')">알레르기</button>
+    <button class="tab-btn" onclick="openTab(event,'weight')">중량 표기</button>
+  </div>
+
+  <!-- 중량 표기 -->
+  <div id="weight" class="tab-content">
+    <div class="notice">
+      ※ 모든 제품은 조리 전 중량입니다.<br>
+      ※ 매장마다 취급하는 메뉴가 상이할 수 있습니다.
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:23%">구분</th><th style="width:27%">중량 및 조각수</th><th style="width:50%">적용 메뉴</th></tr></thead>
+        <tbody><tr><td>한마리<br>(중량 표시)</td><td>10호<br>(951g ~ 1,050g)</td><td style="text-align:left">해바라기 후라이드, HOT후라이드, 바삭클, 후라이드/양념 반반치킨, 뿌링클, HOT뿌링클, 콰삭킹, 콰삭톡, 맛초킹, 골드킹, HOT골드킹, 양념치킨, 쏘마치, 레드킹, 스윗칠리킹, 후라이드/스윗칠리킹 반반치킨, 쏘이갈릭킹 오리지널, 쏘이갈릭킹 허니, 레드맛초 반반킹</td></tr>
+<tr><td>반마리<br>(중량 표시)</td><td>10호 1/2<br>(476g ~ 525g)</td><td style="text-align:left">후라이드 반마리, HOT후라이드 반마리, 맛초킹 반마리, 뿌링클 반마리, 골드킹 반마리, 후라이드(반)+맛초킹라이스+콜라500ml, 후라이드(반)+뿌링치즈볼+콜라245ml, 후라이드(반)+뿌링클라이스+콜라500ml, 뿌링클(반)+맛초킹라이스+콜라500ml, 뿌링클(반)+뿌링클라이스+콜라500ml, 뿌링클(반)+치즈볼+콜라245ml, 골드킹(반)+맛초킹라이스+콜라500ml, 골드킹(반)+뿌링클라이스+콜라500ml, 골드킹(반)+치즈볼+콜라245ml, 맛초킹(반)+맛초킹라이스+콜라500ml, 맛초킹(반)+뿌링클라이스+콜라500ml, 맛초킹(반)+치즈볼+콜라245ml</td></tr>
+<tr><td>사이정육<br>(중량 표시)</td><td>600g 이상</td><td style="text-align:left">동글락 바삭 치킨</td></tr>
+<tr><td>닭목살<br>(중량 표시)</td><td>200g 이상</td><td style="text-align:left">치킨 스넥</td></tr>
+<tr><td>콤보<br>(조각 수 표시)</td><td>다리 5조각<br>윙 5조각<br>봉 5조각</td><td style="text-align:left">해바라기 후라이드, HOT후라이드, 뿌링클, 콰삭킹, 콰삭톡, 맛초킹, 골드킹, HOT골드킹, 양념치킨, 쏘마치, 레드킹, 스윗칠리킹, 쏘이갈릭킹 오리지널, 쏘이갈릭킹 허니</td></tr>
+<tr><td>3&7콤보<br>(조각 수 표시)</td><td>다리 3조각<br>윙 7조각<br>봉 7조각</td><td style="text-align:left">해바라기 후라이드, 뿌링클, 콰삭킹, 콰삭톡, 맛초킹, 골드킹, 양념치킨, 쏘마치, 레드킹, 스윗칠리킹, 쏘이갈릭킹 오리지널, 쏘이갈릭킹 허니</td></tr>
+<tr><td>윙/봉<br>(조각 수 표시)</td><td>윙 10조각<br>봉 10조각</td><td style="text-align:left">해바라기 후라이드, HOT후라이드, 뿌링클, 콰삭킹, 콰삭톡, 맛초킹, 골드킹, HOT골드킹, 양념치킨, 쏘마치, 레드킹, 스윗칠리킹, 쏘이갈릭킹 오리지널, 쏘이갈릭킹 허니</td></tr>
+<tr><td>스틱<br>(조각 수 표시)</td><td>다리 10조각</td><td style="text-align:left">해바라기 후라이드, HOT후라이드, 뿌링클, 콰삭킹, 콰삭톡, 맛초킹, 골드킹, HOT골드킹, 양념치킨, 쏘마치, 레드킹, 스윗칠리킹, 쏘이갈릭킹 오리지널, 쏘이갈릭킹 허니</td></tr>
+<tr><td>순살(FF)<br>(중량 표시)</td><td>600g 이상</td><td style="text-align:left">바삭클 순살, 뿌링클, HOT뿌링클, 콰삭킹, 콰삭톡, 맛초킹, 골드킹, 쏘마치, 레드킹, 스윗칠리킹, 쏘이갈릭킹 오리지널, 쏘이갈릭킹 허니, 레드맛초 반반킹</td></tr>
+<tr><td>순살(FF)<br>(중량 표시)</td><td>580g 이상</td><td style="text-align:left">더블팝 순살 후라이드, 더블팝 순살 양념</td></tr>
+</tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 원산지 -->
+  <div id="origin" class="tab-content active">
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:15%">구분</th><th style="width:40%">메뉴명</th><th style="width:45%">원산지 표기</th></tr></thead>
+        <tbody><tr><td>치킨</td><td>쏘이갈릭킹 허니</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 허니 콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 허니 순살</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 허니 윙</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 허니 스틱</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 오리지널</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 오리지널 콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 오리지널 순살</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 오리지널 윙</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 오리지널 스틱</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>스윗칠리킹</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>스윗칠리킹 콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>스윗칠리킹 순살</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>스윗칠리킹 윙</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>스윗칠리킹 스틱</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>후라이드/스윗칠리킹 반반치킨</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>콰삭킹</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>콰삭킹 콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>콰삭킹 순살</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>콰삭킹 윙</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>콰삭킹 스틱</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>콰삭톡</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>콰삭톡 콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>콰삭톡 순살</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>콰삭톡 윙</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>콰삭톡 스틱</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>뿌링클</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>뿌링클 콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>뿌링클 순살</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>뿌링클 윙</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>뿌링클 스틱</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>HOT뿌링클</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>HOT뿌링클 순살</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>후라이드</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>후라이드/양념 반반치킨</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>후라이드 콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>후라이드 윙</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>후라이드 스틱</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>HOT후라이드</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>HOT후라이드 콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>HOT후라이드 윙</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>HOT후라이드 스틱</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>양념치킨</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>양념치킨 콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>양념치킨 윙</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>양념치킨 스틱</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>바삭클</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>바삭클 순살</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>맛초킹</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>맛초킹 콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>맛초킹 순살</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>맛초킹 윙</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>맛초킹 스틱</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>골드킹</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>골드킹 콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>골드킹 순살</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>골드킹 윙</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>골드킹 스틱</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>HOT골드킹</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>HOT골드킹 콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>HOT골드킹 윙</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>HOT골드킹 스틱</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>쏘마치</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>쏘마치 콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>쏘마치 순살</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>쏘마치 윙</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>쏘마치 스틱</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>더블팝순살 양념</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>더블팝순살 후라이드</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>레드킹</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>레드킹 콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>레드킹 순살</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>레드킹 윙</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>레드킹 스틱</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>레드맛초 반반킹</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>레드맛초 반반킹 순살</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>동글락바삭치킨</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 허니 3&7콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 오리지널 3&7콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>스윗칠리킹 3&7콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>콰삭톡 3&7콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>콰삭킹 3&7콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>뿌링클 3&7콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>맛초킹 3&7콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>레드킹 3&7콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>골드킹 3&7콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>후라이드 3&7콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>쏘마치 3&7콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>양념치킨 3&7콤보</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>뿌링클 반</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>맛초킹 반</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>골드킹 반</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>후라이드 반</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>HOT 후라이드 반</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>콰삭킹 순살 하프</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>뿌링미니콜팝</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>뿌링왕콜팝</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>뿌링빅콜팝</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>콜팝치킨</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>미니콜팝</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>왕콜팝</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>빅콜팝</td><td>닭고기: 국내산</td></tr>
+<tr><td>치킨</td><td>뿌링콜팝</td><td>닭고기: 국내산</td></tr>
+<tr><td>사이드</td><td>맛초킹 닭똥집 튀김</td><td>닭고기: 국내산</td></tr>
+<tr><td>사이드</td><td>레드킹 닭똥집 튀김</td><td>닭고기: 국내산</td></tr>
+<tr><td>사이드</td><td>뿌링클라이스</td><td>닭고기: 국내산, 쌀: 국내산</td></tr>
+<tr><td>사이드</td><td>맛초킹라이스</td><td>닭고기: 국내산, 쌀: 국내산</td></tr>
+<tr><td>사이드</td><td>맛초타코야키</td><td>가쓰오부시(다랑어: 인도네시아산)</td></tr>
+<tr><td>사이드</td><td>뿌링진미채튀김</td><td>오징어: 중국산</td></tr>
+<tr><td>사이드</td><td>빨간소떡</td><td>소시지[닭고기, 돼지고기: 국내산]</td></tr>
+<tr><td>사이드</td><td>뿌링소떡</td><td>소시지[닭고기, 돼지고기: 국내산]</td></tr>
+<tr><td>사이드</td><td>뿌링핫도그</td><td>소시지[닭고기, 돼지고기: 국내산]</td></tr>
+<tr><td>사이드</td><td>치킨스넥</td><td>닭고기: 국내산</td></tr>
+<tr><td>피자</td><td>감자피자</td><td>베이컨(돼지고기): 외국산, 
+베이컨칩(돼지고기): 국내산/외국산 혼합</td></tr>
+<tr><td>피자</td><td>고구마피자</td><td>스모크햄(돼지고기): 국내산, 외국산 혼합</td></tr>
+<tr><td>피자</td><td>불고기피자</td><td>불고기프리미엄(쇠고기): 미국산, 호주산 혼합</td></tr>
+<tr><td>피자</td><td>퐁듀피자</td><td>페퍼로니(돼지고기): 국내산/외국산 혼합, 
+(쇠고기): 호주산, 
+베이컨슬라이스(돼지고기): 외국산</td></tr>
+<tr><td>피자</td><td>콤비네이션피자</td><td>페퍼로니(돼지고기): 국내산/외국산 혼합, 
+(쇠고기): 호주산, 
+스모크햄(돼지고기): 국내산/외국산 혼합, 
+포크토핑(돼지고기): 외국산/국내산 혼합,
+피자치킨토핑(닭고기): 브라질산/국내산
+(매장별 상이)</td></tr>
+</tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 영양성분 -->
+  <div id="nutrition" class="tab-content">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>구분</th><th>메뉴명</th>
+            <th>나트륨</th><th>탄수화물</th><th>당류</th>
+            <th>지방</th><th>트랜스지방</th><th>포화지방</th>
+            <th>콜레스테롤</th><th>단백질</th>
+            <th>총내용량</th><th>100g당 kcal</th>
+          </tr>
+        </thead>
+        <tbody><tr><td>치킨</td><td>쏘이갈릭킹 허니</td><td>383.2mg</td><td>20.3g</td><td>4.1g</td><td>21.6g</td><td>0.1g</td><td>2.8g</td><td>85.6mg</td><td>13.9g</td><td>855.0g</td><td>330.6kcal</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 허니 콤보</td><td>510.8mg</td><td>23.6g</td><td>5.6g</td><td>21.2g</td><td>0.1g</td><td>2.6g</td><td>93.4mg</td><td>12.4g</td><td>758.0g</td><td>335.0kcal</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 허니 순살</td><td>600.0mg</td><td>26.4g</td><td>5.2g</td><td>11.4g</td><td>0.0g</td><td>1.1g</td><td>37.3mg</td><td>14.4g</td><td>586.0g</td><td>265.6kcal</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 허니 윙</td><td>456.5mg</td><td>22.5g</td><td>4.7g</td><td>23.4g</td><td>0.1g</td><td>3.3g</td><td>109.1mg</td><td>12.8g</td><td>607.0g</td><td>351.8kcal</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 허니 스틱</td><td>564.3mg</td><td>25.4g</td><td>5.7g</td><td>20.3g</td><td>0.1g</td><td>2.4g</td><td>97.4mg</td><td>11.4g</td><td>788.0g</td><td>330.3kcal</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 오리지널</td><td>514.3mg</td><td>18.7g</td><td>2.0g</td><td>23.4g</td><td>0.1g</td><td>3.1g</td><td>98.0mg</td><td>14.1g</td><td>756.0g</td><td>341.3kcal</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 오리지널 콤보</td><td>574.8mg</td><td>20.5g</td><td>2.5g</td><td>22.9g</td><td>0.1g</td><td>2.6g</td><td>96.3mg</td><td>12.1g</td><td>695.0g</td><td>336.7kcal</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 오리지널 순살</td><td>692.7mg</td><td>28.8g</td><td>2.3g</td><td>11.5g</td><td>0.0g</td><td>1.0g</td><td>40.7mg</td><td>10.2g</td><td>545.0g</td><td>259.5kcal</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 오리지널 윙</td><td>555.3mg</td><td>19.9g</td><td>2.3g</td><td>24.6g</td><td>0.1g</td><td>3.5g</td><td>106.9mg</td><td>12.6g</td><td>630.0g</td><td>351.5kcal</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 오리지널 스틱</td><td>581.8mg</td><td>17.6g</td><td>2.4g</td><td>24.5g</td><td>0.1g</td><td>2.5g</td><td>93.5mg</td><td>13.1g</td><td>743.0g</td><td>343.9kcal</td></tr>
+<tr><td>치킨</td><td>스윗칠리킹</td><td>391.2mg</td><td>16.4g</td><td>6.4g</td><td>16.2g</td><td>0.1g</td><td>2.2g</td><td>96.2mg</td><td>20.8g</td><td>877.0g</td><td>294.6kcal</td></tr>
+<tr><td>치킨</td><td>스윗칠리킹 콤보</td><td>498.8mg</td><td>21.9g</td><td>8.6g</td><td>20.6g</td><td>0.1g</td><td>2.5g</td><td>94.8mg</td><td>19.7g</td><td>659.0g</td><td>352.0kcal</td></tr>
+<tr><td>치킨</td><td>스윗칠리킹 순살</td><td>596.3mg</td><td>25.3g</td><td>6.4g</td><td>6.1g</td><td>0.0g</td><td>0.7g</td><td>35.1mg</td><td>15.1g</td><td>588.0g</td><td>217.1kcal</td></tr>
+<tr><td>치킨</td><td>스윗칠리킹 윙</td><td>496.0mg</td><td>22.4g</td><td>8.4g</td><td>25.3g</td><td>0.1g</td><td>3.4g</td><td>79.4mg</td><td>17.2g</td><td>597.0g</td><td>386.0kcal</td></tr>
+<tr><td>치킨</td><td>스윗칠리킹 스틱</td><td>506.3mg</td><td>21.0g</td><td>7.4g</td><td>17.7g</td><td>0.1g</td><td>2.0g</td><td>92.9mg</td><td>19.5g</td><td>726.0g</td><td>321.1kcal</td></tr>
+<tr><td>치킨</td><td>후라이드/스윗칠리킹 반반치킨</td><td>324.0mg</td><td>12.9g</td><td>2.6g</td><td>13.7g</td><td>0.1g</td><td>1.8g</td><td>83.9mg</td><td>22.8g</td><td>798.0g</td><td>266.4kcal</td></tr>
+<tr><td>치킨</td><td>콰삭킹</td><td>349.7mg</td><td>19.2g</td><td>0.7g</td><td>21.0g</td><td>0.1g</td><td>2.9g</td><td>69.2mg</td><td>18.9g</td><td>1,064.0g</td><td>341.7kcal</td></tr>
+<tr><td>치킨</td><td>콰삭킹 콤보</td><td>398.4mg</td><td>19.5g</td><td>0.7g</td><td>22.1g</td><td>0.1g</td><td>2.9g</td><td>67.4mg</td><td>18.1g</td><td>793.0g</td><td>349.7kcal</td></tr>
+<tr><td>치킨</td><td>콰삭킹 순살</td><td>340.4mg</td><td>22.5g</td><td>0.9g</td><td>11.1g</td><td>0.1g</td><td>1.1g</td><td>36.3mg</td><td>14.6g</td><td>569.0g</td><td>248.2kcal</td></tr>
+<tr><td>치킨</td><td>콰삭킹 윙</td><td>332.3mg</td><td>23.1g</td><td>0.6g</td><td>24.5g</td><td>0.1g</td><td>3.5g</td><td>73.4mg</td><td>18.7g</td><td>630.0g</td><td>387.9kcal</td></tr>
+<tr><td>치킨</td><td>콰삭킹 스틱</td><td>385.8mg</td><td>17.9g</td><td>1.1g</td><td>20.8g</td><td>0.1g</td><td>2.5g</td><td>70.7mg</td><td>17.0g</td><td>923.0g</td><td>326.5kcal</td></tr>
+<tr><td>치킨</td><td>콰삭톡</td><td>349.7mg</td><td>19.2g</td><td>0.7g</td><td>21.0g</td><td>0.1g</td><td>2.9g</td><td>69.2mg</td><td>18.9g</td><td>1,064.0g</td><td>341.7kcal</td></tr>
+<tr><td>치킨</td><td>콰삭톡 콤보</td><td>398.4mg</td><td>19.5g</td><td>0.7g</td><td>22.1g</td><td>0.1g</td><td>2.9g</td><td>67.4mg</td><td>18.1g</td><td>793.0g</td><td>349.7kcal</td></tr>
+<tr><td>치킨</td><td>콰삭톡 순살</td><td>340.4mg</td><td>22.5g</td><td>0.9g</td><td>11.1g</td><td>0.1g</td><td>1.1g</td><td>36.3mg</td><td>14.6g</td><td>569.0g</td><td>248.2kcal</td></tr>
+<tr><td>치킨</td><td>콰삭톡 윙</td><td>332.3mg</td><td>23.1g</td><td>0.6g</td><td>24.5g</td><td>0.1g</td><td>3.5g</td><td>73.4mg</td><td>18.7g</td><td>630.0g</td><td>387.9kcal</td></tr>
+<tr><td>치킨</td><td>콰삭톡 스틱</td><td>385.8mg</td><td>17.9g</td><td>1.1g</td><td>20.8g</td><td>0.1g</td><td>2.5g</td><td>70.7mg</td><td>17.0g</td><td>923.0g</td><td>326.5kcal</td></tr>
+<tr><td>치킨</td><td>뿌링클</td><td>500.8mg</td><td>11.6g</td><td>1.9g</td><td>24.4g</td><td>0.1g</td><td>4.2g</td><td>80.1mg</td><td>19.7g</td><td>912.0g</td><td>345.1kcal</td></tr>
+<tr><td>치킨</td><td>뿌링클 콤보</td><td>340.7mg</td><td>14.2g</td><td>2.5g</td><td>16.5g</td><td>0.1g</td><td>3.3g</td><td>104.7mg</td><td>22.3g</td><td>756.0g</td><td>294.0kcal</td></tr>
+<tr><td>치킨</td><td>뿌링클 순살</td><td>521.9mg</td><td>24.6g</td><td>2.3g</td><td>9.7g</td><td>0.1g</td><td>1.4g</td><td>42.1mg</td><td>18.0g</td><td>555.0g</td><td>257.9kcal</td></tr>
+<tr><td>치킨</td><td>뿌링클 윙</td><td>314.6mg</td><td>7.3g</td><td>2.6g</td><td>20.1g</td><td>0.1g</td><td>4.5g</td><td>125.5mg</td><td>25.2g</td><td>610.0g</td><td>310.5kcal</td></tr>
+<tr><td>치킨</td><td>뿌링클 스틱</td><td>377.7mg</td><td>14.7g</td><td>2.7g</td><td>18.1g</td><td>0.1g</td><td>3.3g</td><td>109.6mg</td><td>22.7g</td><td>756.0g</td><td>312.3kcal</td></tr>
+<tr><td>치킨</td><td>HOT뿌링클</td><td>386.1mg</td><td>9.8g</td><td>1.3g</td><td>11.6g</td><td>0.1g</td><td>2.5g</td><td>97.2mg</td><td>23.0g</td><td>954.0g</td><td>235.6kcal</td></tr>
+<tr><td>치킨</td><td>HOT뿌링클 순살</td><td>582.0mg</td><td>21.9g</td><td>2.1g</td><td>10.0g</td><td>0.1g</td><td>1.4g</td><td>46.6mg</td><td>19.2g</td><td>520.0g</td><td>254.1kcal</td></tr>
+<tr><td>치킨</td><td>후라이드</td><td>246.8mg</td><td>8.6g</td><td>0.4g</td><td>17.9g</td><td>0.1g</td><td>2.7g</td><td>90.4mg</td><td>23.0g</td><td>976.0g</td><td>287.5kcal</td></tr>
+<tr><td>치킨</td><td>후라이드 콤보</td><td>309.2mg</td><td>10.6g</td><td>0.4g</td><td>23.3g</td><td>0.1g</td><td>3.3g</td><td>96.8mg</td><td>21.8g</td><td>743.0g</td><td>339.2kcal</td></tr>
+<tr><td>치킨</td><td>후라이드 윙</td><td>267.5mg</td><td>10.1g</td><td>0.4g</td><td>23.8g</td><td>0.1g</td><td>3.9g</td><td>93.4mg</td><td>21.9g</td><td>679.0g</td><td>342.6kcal</td></tr>
+<tr><td>치킨</td><td>후라이드 스틱</td><td>314.4mg</td><td>14.5g</td><td>0.4g</td><td>22.2g</td><td>0.1g</td><td>3.0g</td><td>97.7mg</td><td>19.7g</td><td>841.0g</td><td>336.9kcal</td></tr>
+<tr><td>치킨</td><td>HOT후라이드</td><td>318.4mg</td><td>11.0g</td><td>0.5g</td><td>20.3g</td><td>0.1g</td><td>3.1g</td><td>83.5mg</td><td>23.8g</td><td>956.0g</td><td>322.0kcal</td></tr>
+<tr><td>치킨</td><td>HOT후라이드 콤보</td><td>409.1mg</td><td>13.8g</td><td>0.8g</td><td>22.6g</td><td>0.1g</td><td>3.4g</td><td>106.0mg</td><td>20.8g</td><td>779.0g</td><td>341.6kcal</td></tr>
+<tr><td>치킨</td><td>HOT후라이드 윙</td><td>374.5mg</td><td>10.6g</td><td>0.6g</td><td>23.5g</td><td>0.1g</td><td>4.0g</td><td>102.6mg</td><td>21.9g</td><td>697.0g</td><td>341.4kcal</td></tr>
+<tr><td>치킨</td><td>HOT후라이드 스틱</td><td>449.7mg</td><td>15.7g</td><td>0.8g</td><td>20.7g</td><td>0.1g</td><td>2.9g</td><td>97.4mg</td><td>20.4g</td><td>818.0g</td><td>331.2kcal</td></tr>
+<tr><td>치킨</td><td>양념치킨</td><td>322.9mg</td><td>20.2g</td><td>5.8g</td><td>13.6g</td><td>0.1g</td><td>2.0g</td><td>65.2mg</td><td>17.4g</td><td>1,360.0g</td><td>272.6kcal</td></tr>
+<tr><td>치킨</td><td>바삭클</td><td>248.3mg</td><td>7.4g</td><td>0.4g</td><td>12.7g</td><td>0.1g</td><td>2.3g</td><td>93.5mg</td><td>23.9g</td><td>914.0g</td><td>239.0kcal</td></tr>
+<tr><td>치킨</td><td>바삭클 순살</td><td>493.5mg</td><td>20.4g</td><td>0.8g</td><td>10.5g</td><td>0.0g</td><td>1.2g</td><td>51.5mg</td><td>19.9g</td><td>504.0g</td><td>255.4kcal</td></tr>
+<tr><td>치킨</td><td>맛초킹</td><td>345.7mg</td><td>13.9g</td><td>4.3g</td><td>15.9g</td><td>0.1g</td><td>2.5g</td><td>78.3mg</td><td>19.3g</td><td>934.0g</td><td>275.6kcal</td></tr>
+<tr><td>치킨</td><td>맛초킹 콤보</td><td>345.6mg</td><td>15.2g</td><td>4.5g</td><td>18.9g</td><td>0.1g</td><td>2.7g</td><td>85.0mg</td><td>19.3g</td><td>761.0g</td><td>308.1kcal</td></tr>
+<tr><td>치킨</td><td>맛초킹 순살</td><td>544.3mg</td><td>21.1g</td><td>3.4g</td><td>9.3g</td><td>0.0g</td><td>1.2g</td><td>33.0mg</td><td>16.1g</td><td>567.0g</td><td>232.3kcal</td></tr>
+<tr><td>치킨</td><td>맛초킹 윙</td><td>244.3mg</td><td>13.0g</td><td>2.8g</td><td>21.3g</td><td>0.1g</td><td>3.3g</td><td>96.6mg</td><td>19.6g</td><td>639.0g</td><td>321.7kcal</td></tr>
+<tr><td>치킨</td><td>맛초킹 스틱</td><td>333.7mg</td><td>14.6g</td><td>3.9g</td><td>15.3g</td><td>0.0g</td><td>2.2g</td><td>88.0mg</td><td>20.9g</td><td>851.0g</td><td>279.9kcal</td></tr>
+<tr><td>치킨</td><td>골드킹</td><td>315.5mg</td><td>12.4g</td><td>1.6g</td><td>17.6g</td><td>0.1g</td><td>2.7g</td><td>80.5mg</td><td>20.8g</td><td>1,046.0g</td><td>291.1kcal</td></tr>
+<tr><td>치킨</td><td>골드킹 콤보</td><td>399.0mg</td><td>14.0g</td><td>2.0g</td><td>23.0g</td><td>0.1g</td><td>3.3g</td><td>99.2mg</td><td>20.0g</td><td>770.0g</td><td>343.1kcal</td></tr>
+<tr><td>치킨</td><td>골드킹 순살</td><td>521.1mg</td><td>24.2g</td><td>2.6g</td><td>11.9g</td><td>0.1g</td><td>1.3g</td><td>35.7mg</td><td>15.7g</td><td>559.0g</td><td>267.1kcal</td></tr>
+<tr><td>치킨</td><td>골드킹 윙</td><td>364.3mg</td><td>14.3g</td><td>2.0g</td><td>23.1g</td><td>0.1g</td><td>3.6g</td><td>88.2mg</td><td>20.4g</td><td>744.0g</td><td>346.1kcal</td></tr>
+<tr><td>치킨</td><td>골드킹 스틱</td><td>382.8mg</td><td>12.8g</td><td>2.2g</td><td>20.6g</td><td>0.1g</td><td>3.1g</td><td>99.0mg</td><td>19.9g</td><td>855.0g</td><td>315.9kcal</td></tr>
+<tr><td>치킨</td><td>HOT골드킹</td><td>470.8mg</td><td>13.8g</td><td>3.6g</td><td>20.1g</td><td>0.1g</td><td>3.0g</td><td>110.2mg</td><td>19.6g</td><td>871.0g</td><td>314.7kcal</td></tr>
+<tr><td>치킨</td><td>HOT골드킹 콤보</td><td>476.5mg</td><td>15.3g</td><td>3.4g</td><td>19.7g</td><td>0.1g</td><td>2.9g</td><td>91.8mg</td><td>18.7g</td><td>779.0g</td><td>313.2kcal</td></tr>
+<tr><td>치킨</td><td>HOT골드킹 윙</td><td>459.3mg</td><td>17.0g</td><td>3.5g</td><td>19.9g</td><td>0.1g</td><td>3.2g</td><td>98.1mg</td><td>20.5g</td><td>729.0g</td><td>329.2kcal</td></tr>
+<tr><td>치킨</td><td>HOT골드킹 스틱</td><td>488.1mg</td><td>16.3g</td><td>3.9g</td><td>16.1g</td><td>0.1g</td><td>2.2g</td><td>93.2mg</td><td>20.3g</td><td>770.0g</td><td>291.5kcal</td></tr>
+<tr><td>치킨</td><td>쏘마치</td><td>405.0mg</td><td>15.9g</td><td>6.8g</td><td>15.5g</td><td>0.1g</td><td>2.8g</td><td>81.3mg</td><td>19.1g</td><td>1,080.0g</td><td>279.6kcal</td></tr>
+<tr><td>치킨</td><td>쏘마치 콤보</td><td>464.2mg</td><td>19.8g</td><td>8.9g</td><td>16.9g</td><td>0.1g</td><td>2.4g</td><td>80.8mg</td><td>17.0g</td><td>904.0g</td><td>299.1kcal</td></tr>
+<tr><td>치킨</td><td>쏘마치 순살</td><td>609.3mg</td><td>24.3g</td><td>7.7g</td><td>9.4g</td><td>0.0g</td><td>1.2g</td><td>42.7mg</td><td>15.5g</td><td>643.0g</td><td>244.1kcal</td></tr>
+<tr><td>치킨</td><td>쏘마치 윙</td><td>419.0mg</td><td>20.1g</td><td>8.5g</td><td>19.8g</td><td>0.1g</td><td>3.3g</td><td>92.3mg</td><td>19.0g</td><td>620.0g</td><td>334.3kcal</td></tr>
+<tr><td>치킨</td><td>쏘마치 스틱</td><td>445.9mg</td><td>21.1g</td><td>8.6g</td><td>15.0g</td><td>0.1g</td><td>2.3g</td><td>86.2mg</td><td>16.9g</td><td>978.0g</td><td>287.0kcal</td></tr>
+<tr><td>치킨</td><td>더블팝순살 양념</td><td>576.1mg</td><td>33.7g</td><td>9.1g</td><td>14.2g</td><td>0.1g</td><td>2.1g</td><td>32.6mg</td><td>10.5g</td><td>700.0g</td><td>304.7kcal</td></tr>
+<tr><td>치킨</td><td>더블팝순살 후라이드</td><td>416.9mg</td><td>28.2g</td><td>2.5g</td><td>20.6g</td><td>0.1g</td><td>2.7g</td><td>48.1mg</td><td>13.8g</td><td>471.0g</td><td>353.1kcal</td></tr>
+<tr><td>치킨</td><td>레드킹</td><td>328.9mg</td><td>12.9g</td><td>4.5g</td><td>14.1g</td><td>0.0g</td><td>2.1g</td><td>81.1mg</td><td>19.2g</td><td>1,001.0g</td><td>254.9kcal</td></tr>
+<tr><td>치킨</td><td>레드킹 콤보</td><td>356.7mg</td><td>16.2g</td><td>5.9g</td><td>16.0g</td><td>0.0g</td><td>2.3g</td><td>84.1mg</td><td>19.4g</td><td>800.0g</td><td>286.5kcal</td></tr>
+<tr><td>치킨</td><td>레드킹 순살</td><td>554.2mg</td><td>23.7g</td><td>4.8g</td><td>8.9g</td><td>0.0g</td><td>1.1g</td><td>40.2mg</td><td>15.0g</td><td>583.0g</td><td>235.2kcal</td></tr>
+<tr><td>치킨</td><td>레드킹 윙</td><td>288.0mg</td><td>14.6g</td><td>4.2g</td><td>17.6g</td><td>0.1g</td><td>2.8g</td><td>101.2mg</td><td>19.7g</td><td>602.0g</td><td>295.3kcal</td></tr>
+<tr><td>치킨</td><td>레드킹 스틱</td><td>327.9mg</td><td>14.3g</td><td>5.2g</td><td>17.6g</td><td>0.1g</td><td>2.4g</td><td>85.9mg</td><td>17.5g</td><td>910.0g</td><td>285.4kcal</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹(허니) 3&7콤보</td><td>432.9mg</td><td>16.1g</td><td>5.1g</td><td>20.8g</td><td>0.1g</td><td>2.7g</td><td>93.9mg</td><td>18.8g</td><td>732g</td><td>326.9kcal</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹(오리지널) 3&7콤보</td><td>508.6mg</td><td>11.9g</td><td>2.5g</td><td>23.2g</td><td>0.1g</td><td>3.2g</td><td>122.1mg</td><td>20.6g</td><td>660g</td><td>339.0kcal</td></tr>
+<tr><td>치킨</td><td>스윗칠리킹 3&7콤보</td><td>481.6mg</td><td>18.3g</td><td>8.5g</td><td>20.6g</td><td>0.1g</td><td>2.4g</td><td>105.6mg</td><td>20.3g</td><td>722g</td><td>339.9kcal</td></tr>
+<tr><td>치킨</td><td>콰삭톡 3&7콤보</td><td>338.0mg</td><td>17.4g</td><td>0.7g</td><td>25.8g</td><td>0.1g</td><td>2.7g</td><td>93.4mg</td><td>18.5g</td><td>769g</td><td>375.5kcal</td></tr>
+<tr><td>치킨</td><td>콰삭킹 3&7콤보</td><td>338.0mg</td><td>17.4g</td><td>0.7g</td><td>25.8g</td><td>0.1g</td><td>2.7g</td><td>93.4mg</td><td>18.5g</td><td>769g</td><td>375.5kcal</td></tr>
+<tr><td>치킨</td><td>뿌링클 3&7콤보</td><td>364.1mg</td><td>15.3g</td><td>3.1g</td><td>16.8g</td><td>0.1g</td><td>2.9g</td><td>112.5mg</td><td>21.1g</td><td>633g</td><td>296.6kcal</td></tr>
+<tr><td>치킨</td><td>맛초킹 3&7콤보</td><td>361.3mg</td><td>13.7g</td><td>4.7g</td><td>17.4g</td><td>0.1g</td><td>2.6g</td><td>103.5mg</td><td>19.9g</td><td>707g</td><td>290.7kcal</td></tr>
+<tr><td>치킨</td><td>레드킹 3&7콤보</td><td>343.2mg</td><td>16.7g</td><td>6.2g</td><td>15.1g</td><td>0.1g</td><td>2.2g</td><td>101.0mg</td><td>18.4g</td><td>781g</td><td>276.3kcal</td></tr>
+<tr><td>치킨</td><td>골드킹 3&7콤보</td><td>420.8mg</td><td>15.5g</td><td>3.7g</td><td>20.8g</td><td>0.1g</td><td>2.7g</td><td>108.0mg</td><td>19.8g</td><td>696g</td><td>328.0kcal</td></tr>
+<tr><td>치킨</td><td>후라이드 3&7콤보</td><td>279.4mg</td><td>12.5g</td><td>0.6g</td><td>27.3g</td><td>0.1g</td><td>3.1g</td><td>102.1mg</td><td>19.0g</td><td>719g</td><td>371.7kcal</td></tr>
+<tr><td>치킨</td><td>쏘마치 3&7콤보</td><td>466.5mg</td><td>24.5g</td><td>8.9g</td><td>16.1g</td><td>0.1g</td><td>2.3g</td><td>79.0mg</td><td>15.5g</td><td>862g</td><td>304.7kcal</td></tr>
+<tr><td>치킨</td><td>양념치킨 3&7콤보</td><td>427.9mg</td><td>23.4g</td><td>7.8g</td><td>16.3g</td><td>0.1g</td><td>2.1g</td><td>103.8mg</td><td>14.2g</td><td>947g</td><td>297.2kcal</td></tr>
+<tr><td>치킨</td><td>콜팝, 미니콜팝, 왕콜팝, 빅콜팝
+(음료, 소스 제외)</td><td>518.1mg</td><td>13.9g</td><td>0.5g</td><td>17.2g</td><td>0.1g</td><td>3.4g</td><td>47.0mg</td><td>17.6g</td><td>508.0g</td><td>280.9kcal</td></tr>
+<tr><td>치킨</td><td>뿌링콜팝, 뿌링미니콜팝, 
+뿌링왕콜팝, 뿌링빅콜팝
+(음료, 소스 제외)</td><td>552.1mg</td><td>15.8g</td><td>2.1g</td><td>16.6g</td><td>0.1g</td><td>3.3g</td><td>43.4mg</td><td>17.2g</td><td>526.0g</td><td>281.6kcal</td></tr>
+<tr><td>사이드</td><td>카이막치즈볼</td><td>328.4mg</td><td>48.9g</td><td>6.0g</td><td>14.1g</td><td>0.1g</td><td>7.8g</td><td>16.4mg</td><td>3.9g</td><td>474.0g</td><td>338.1kcal</td></tr>
+<tr><td>사이드</td><td>뿌링카이막치즈볼</td><td>375.7mg</td><td>51.3g</td><td>6.3g</td><td>13.5g</td><td>0.2g</td><td>7.7g</td><td>16.9mg</td><td>4.1g</td><td>501.0g</td><td>343.2kcal</td></tr>
+<tr><td>사이드</td><td>콰삭슈림프</td><td>730.7mg</td><td>27.1g</td><td>0.6g</td><td>15.8g</td><td>0.1g</td><td>1.9g</td><td>99.5mg</td><td>11.2g</td><td>445.0g</td><td>295.7kcal</td></tr>
+<tr><td>사이드</td><td>뿌링클나쵸</td><td>196.0mg</td><td>34.0g</td><td>2.0g</td><td>14.0g</td><td>0.0g</td><td>6.0g</td><td>0.7mg</td><td>3.0g</td><td>53.0g</td><td>274.0kcal</td></tr>
+<tr><td>사이드</td><td>뿌링클라이스</td><td>460.0mg</td><td>33.0g</td><td>6.0g</td><td>4.1g</td><td>0.0g</td><td>1.9g</td><td>10.0mg</td><td>5.0g</td><td>100.0g</td><td>190.0kcal</td></tr>
+<tr><td>사이드</td><td>맛초킹라이스</td><td>510.0mg</td><td>34.0g</td><td>8.0g</td><td>2.9g</td><td>0.0g</td><td>0.6g</td><td>10.0mg</td><td>5.0g</td><td>100.0g</td><td>180.0kcal</td></tr>
+<tr><td>사이드</td><td>맛초타코야끼</td><td>514.9mg</td><td>21.4g</td><td>4.3g</td><td>8.9g</td><td>0.0g</td><td>1.3g</td><td>44.1mg</td><td>5.6g</td><td>234.0g</td><td>188.4kcal</td></tr>
+<tr><td>사이드</td><td>뿌링진미채튀김</td><td>860.8mg</td><td>44.3g</td><td>7.0g</td><td>19.2g</td><td>0.1g</td><td>2.6g</td><td>139.9mg</td><td>20.0g</td><td>100.0g</td><td>429.2kcal</td></tr>
+<tr><td>사이드</td><td>치로스</td><td>240.7mg</td><td>45.0g</td><td>13.0g</td><td>15.1g</td><td>0.1g</td><td>5.6g</td><td>24.6mg</td><td>9.3g</td><td>150.0g</td><td>353.2kcal</td></tr>
+<tr><td>사이드</td><td>달콤바삭치즈볼</td><td>389.6mg</td><td>45.9g</td><td>7.5g</td><td>15.1g</td><td>0.1g</td><td>7.9g</td><td>10.9mg</td><td>8.6g</td><td>640.0g</td><td>353.4kcal</td></tr>
+<tr><td>사이드</td><td>뿌링치즈볼</td><td>432.5mg</td><td>46.7g</td><td>8.9g</td><td>15.5g</td><td>0.1g</td><td>8.4g</td><td>15.4mg</td><td>8.2g</td><td>672.0g</td><td>359.3kcal</td></tr>
+<tr><td>사이드</td><td>분모자로제떡볶이</td><td>960.0mg</td><td>71.0g</td><td>27.0g</td><td>11.0g</td><td>0.0g</td><td>5.0g</td><td>22.0mg</td><td>4.0g</td><td>270.0g</td><td>396.0kcal</td></tr>
+<tr><td>사이드</td><td>뿌링감자</td><td>559.3mg</td><td>42.1g</td><td>4.9g</td><td>15.3g</td><td>0.0g</td><td>2.0g</td><td>1.4mg</td><td>4.5g</td><td>440.0g</td><td>323.6kcal</td></tr>
+<tr><td>사이드</td><td>빨간소떡</td><td>403.3mg</td><td>36.6g</td><td>3.2g</td><td>8.4g</td><td>0.0g</td><td>1.9g</td><td>14.9mg</td><td>8.4g</td><td>620.0g</td><td>255.3kcal</td></tr>
+<tr><td>사이드</td><td>뿌링소떡</td><td>403.7mg</td><td>38.0g</td><td>4.0g</td><td>9.0g</td><td>0.1g</td><td>2.2g</td><td>8.4mg</td><td>8.4g</td><td>620.0g</td><td>265.9kcal</td></tr>
+<tr><td>사이드</td><td>뿌링핫도그</td><td>472.1mg</td><td>40.7g</td><td>6.5g</td><td>15.2g</td><td>0.1g</td><td>4.9g</td><td>6.7mg</td><td>7.3g</td><td>642.0g</td><td>329.0kcal</td></tr>
+<tr><td>사이드</td><td>웨지감자</td><td>348.0mg</td><td>28.0g</td><td>3.0g</td><td>11.9g</td><td>0.0g</td><td>1.0g</td><td>-</td><td>2.7g</td><td>501.0g</td><td>229.8kcal</td></tr>
+<tr><td>사이드</td><td>뿌링치즈스틱</td><td>591.9mg</td><td>25.6g</td><td>2.8g</td><td>18.3g</td><td>0.4g</td><td>7.5g</td><td>33.0mg</td><td>15.5g</td><td>527.0g</td><td>329.1kcal</td></tr>
+<tr><td>사이드</td><td>케이준프라이</td><td>462.4mg</td><td>38.0g</td><td>0.2g</td><td>15.6g</td><td>0.0g</td><td>1.3g</td><td>-</td><td>4.3g</td><td>448.0g</td><td>309.4kcal</td></tr>
+<tr><td>사이드</td><td>치킨스넥</td><td>387.1mg</td><td>18.7g</td><td>2.1g</td><td>25.8g</td><td>0.1g</td><td>3.4g</td><td>74.1mg</td><td>15.1g</td><td>505.0g</td><td>367.1kcal</td></tr>
+<tr><td>사이드</td><td>코울슬로</td><td>260.0mg</td><td>6.0g</td><td>3.0g</td><td>3.2g</td><td>0.0g</td><td>0.5g</td><td>0.0mg</td><td>1.0g</td><td>90.0g</td><td>55.0kcal</td></tr>
+<tr><td>시즈닝</td><td>스윗 칠리톡</td><td>730.0mg</td><td>9.0g</td><td>6.0g</td><td>0.3g</td><td>0.0g</td><td>0.1g</td><td>0.3mg</td><td>0.7g</td><td>12.0g</td><td>40.0kcal</td></tr>
+<tr><td>시즈닝</td><td>버터 비스킷톡</td><td>320.0mg</td><td>9.0g</td><td>7.0g</td><td>1.5g</td><td>0.0g</td><td>1.4g</td><td>3.1mg</td><td>0.6g</td><td>12.0g</td><td>50.0kcal</td></tr>
+<tr><td>시즈닝</td><td>트리플 페퍼톡</td><td>420.0mg</td><td>8.0g</td><td>3.0g</td><td>0.8g</td><td>0.0g</td><td>0.6g</td><td>1.7mg</td><td>1.2g</td><td>12.0g</td><td>45.0kcal</td></tr>
+<tr><td>피자</td><td>콤비네이션피자R</td><td>462.2mg</td><td>28.1g</td><td>1.7g</td><td>10.0g</td><td>0.2g</td><td>4.7g</td><td>24.4mg</td><td>12.9g</td><td>526.0g</td><td>253.9kcal</td></tr>
+<tr><td>피자</td><td>감자피자R</td><td>372.1mg</td><td>28.1g</td><td>2.5g</td><td>14.0g</td><td>0.2g</td><td>4.9g</td><td>23.4mg</td><td>10.7g</td><td>578.0g</td><td>281.2kcal</td></tr>
+<tr><td>피자</td><td>고구마피자R</td><td>407.6mg</td><td>34.1g</td><td>3.6g</td><td>12.0g</td><td>0.2g</td><td>4.2g</td><td>22.3mg</td><td>9.7g</td><td>550.0g</td><td>283.0kcal</td></tr>
+<tr><td>피자</td><td>퐁듀피자R</td><td>457.8mg</td><td>25.1g</td><td>4.3g</td><td>12.0g</td><td>0.3g</td><td>5.7g</td><td>19.1mg</td><td>11.1g</td><td>622.0g</td><td>252.8kcal</td></tr>
+<tr><td>피자</td><td>불고기피자R</td><td>419.4mg</td><td>31.4g</td><td>2.9g</td><td>9.2g</td><td>0.3g</td><td>4.7g</td><td>25.8mg</td><td>13.5g</td><td>448.0g</td><td>262.2kcal</td></tr>
+<tr><td>피자</td><td>콤비네이션피자L</td><td>447.7mg</td><td>27.9g</td><td>2.2g</td><td>10.7g</td><td>0.2g</td><td>4.9g</td><td>25.7mg</td><td>13.1g</td><td>888.0g</td><td>259.7kcal</td></tr>
+<tr><td>피자</td><td>감자피자L</td><td>364.1mg</td><td>28.1g</td><td>2.8g</td><td>13.6g</td><td>0.2g</td><td>4.7g</td><td>19.5mg</td><td>10.0g</td><td>1,020.0g</td><td>274.4kcal</td></tr>
+<tr><td>피자</td><td>고구마피자L</td><td>389.4mg</td><td>32.3g</td><td>4.4g</td><td>12.5g</td><td>0.2g</td><td>4.3g</td><td>18.9mg</td><td>9.4g</td><td>969.0g</td><td>279.2kcal</td></tr>
+<tr><td>피자</td><td>퐁듀피자L</td><td>414.8mg</td><td>25.4g</td><td>5.3g</td><td>12.8g</td><td>0.3g</td><td>5.7g</td><td>17.4mg</td><td>10.5g</td><td>1,047.0g</td><td>258.7kcal</td></tr>
+<tr><td>피자</td><td>불고기피자L</td><td>410.9mg</td><td>30.1g</td><td>3.0g</td><td>10.1g</td><td>0.3g</td><td>5.2g</td><td>22.8mg</td><td>13.6g</td><td>764.0g</td><td>265.6kcal</td></tr>
+</tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 알레르기 -->
+  <div id="allergy" class="tab-content">
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:12%">구분</th><th style="width:28%">메뉴명</th><th style="width:60%">알레르기 정보</th></tr></thead>
+        <tbody><tr><td>치킨</td><td>쏘이갈릭킹 허니</td><td style="text-align:left">대두, 닭고기, 밀, 쇠고기, 조개류(굴), 우유, 새우, 알류</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 허니 콤보</td><td style="text-align:left">대두, 닭고기, 밀, 쇠고기, 조개류(굴), 우유, 새우, 알류</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 허니 순살</td><td style="text-align:left">대두, 닭고기, 밀, 쇠고기, 조개류(굴), 우유, 새우, 알류</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 허니 윙</td><td style="text-align:left">대두, 닭고기, 밀, 쇠고기, 조개류(굴), 우유, 새우, 알류</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 허니 스틱</td><td style="text-align:left">대두, 닭고기, 밀, 쇠고기, 조개류(굴), 우유, 새우, 알류</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 오리지널</td><td style="text-align:left">대두, 닭고기, 밀, 쇠고기, 조개류(굴), 새우, 알류</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 오리지널 콤보</td><td style="text-align:left">대두, 닭고기, 밀, 쇠고기, 조개류(굴), 새우, 알류</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 오리지널 순살</td><td style="text-align:left">대두, 닭고기, 밀, 쇠고기, 조개류(굴), 새우, 알류</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 오리지널 윙</td><td style="text-align:left">대두, 닭고기, 밀, 쇠고기, 조개류(굴), 새우, 알류</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹 오리지널 스틱</td><td style="text-align:left">대두, 닭고기, 밀, 쇠고기, 조개류(굴), 새우, 알류</td></tr>
+<tr><td>치킨</td><td>스윗칠리킹</td><td style="text-align:left">대두, 닭고기, 난류, 밀, 조개류(굴), 우유, 토마토, 쇠고기</td></tr>
+<tr><td>치킨</td><td>스윗칠리킹 콤보</td><td style="text-align:left">대두, 닭고기, 난류, 밀, 조개류(굴), 우유, 토마토, 쇠고기</td></tr>
+<tr><td>치킨</td><td>스윗칠리킹 순살</td><td style="text-align:left">대두, 닭고기, 난류, 밀, 조개류(굴), 우유, 토마토, 쇠고기</td></tr>
+<tr><td>치킨</td><td>스윗칠리킹 윙</td><td style="text-align:left">대두, 닭고기, 난류, 밀, 조개류(굴), 우유, 토마토, 쇠고기</td></tr>
+<tr><td>치킨</td><td>스윗칠리킹 스틱</td><td style="text-align:left">대두, 닭고기, 난류, 밀, 조개류(굴), 우유, 토마토, 쇠고기</td></tr>
+<tr><td>치킨</td><td>후라이드/스윗칠리킹 반반치킨</td><td style="text-align:left">대두, 닭고기, 난류, 밀, 조개류(굴), 우유, 토마토, 쇠고기</td></tr>
+<tr><td>치킨</td><td>콰삭킹</td><td style="text-align:left">땅콩, 대두, 우유, 새우, 밀, 쇠고기, 조개류(굴), 계란, 닭고기</td></tr>
+<tr><td>치킨</td><td>콰삭킹 콤보</td><td style="text-align:left">땅콩, 대두, 우유, 새우, 밀, 쇠고기, 조개류(굴), 계란, 닭고기</td></tr>
+<tr><td>치킨</td><td>콰삭킹 순살</td><td style="text-align:left">땅콩, 대두, 우유, 새우, 밀, 쇠고기, 조개류(굴), 계란, 닭고기</td></tr>
+<tr><td>치킨</td><td>콰삭킹 윙</td><td style="text-align:left">땅콩, 대두, 우유, 새우, 밀, 쇠고기, 조개류(굴), 계란, 닭고기</td></tr>
+<tr><td>치킨</td><td>콰삭킹 스틱</td><td style="text-align:left">땅콩, 대두, 우유, 새우, 밀, 쇠고기, 조개류(굴), 계란, 닭고기</td></tr>
+<tr><td>치킨</td><td>콰삭톡</td><td style="text-align:left">콰삭킹 : 닭고기, 대두, 난류, 밀, 땅콩, 우유, 새우, 쇠고기, 조개류(굴) <br>스윗 칠리톡 : 우유, 대두, 밀, 토마토, 쇠고기 버터 비스킷톡 : 우유, 대두, 밀 트리플 페퍼톡 : 우유, 대두, 밀</td></tr>
+<tr><td>치킨</td><td>콰삭톡 콤보</td><td style="text-align:left">콰삭킹 콤보 : 닭고기, 대두, 난류, 밀, 땅콩, 우유, 새우, 쇠고기, 조개류(굴) <br>스윗 칠리톡 : 우유, 대두, 밀, 토마토, 쇠고기 버터 비스킷톡 : 우유, 대두, 밀 트리플 페퍼톡 : 우유, 대두, 밀</td></tr>
+<tr><td>치킨</td><td>콰삭톡 순살</td><td style="text-align:left">콰삭킹 순살 : 닭고기, 대두, 난류, 밀, 땅콩, 우유, 새우, 쇠고기, 조개류(굴) <br>스윗 칠리톡 : 우유, 대두, 밀, 토마토, 쇠고기 버터 비스킷톡 : 우유, 대두, 밀 트리플 페퍼톡 : 우유, 대두, 밀</td></tr>
+<tr><td>치킨</td><td>콰삭톡 윙</td><td style="text-align:left">콰삭킹 윙 : 닭고기, 대두, 난류, 밀, 땅콩, 우유, 새우, 쇠고기, 조개류(굴) <br>스윗 칠리톡 : 우유, 대두, 밀, 토마토, 쇠고기 버터 비스킷톡 : 우유, 대두, 밀 트리플 페퍼톡 : 우유, 대두, 밀</td></tr>
+<tr><td>치킨</td><td>콰삭톡 스틱</td><td style="text-align:left">콰삭킹 스틱 : 닭고기, 대두, 난류, 밀, 땅콩, 우유, 새우, 쇠고기, 조개류(굴) <br>스윗 칠리톡 : 우유, 대두, 밀, 토마토, 쇠고기 버터 비스킷톡 : 우유, 대두, 밀 트리플 페퍼톡 : 우유, 대두, 밀</td></tr>
+<tr><td>치킨</td><td>뿌링클</td><td style="text-align:left">닭 : 닭고기, 대두 뿌링클시즈닝 : 우유, 대두 뿌링뿌링소스 : 계란, 우유, 대두 <br>순살바삭클 : 대두, 밀, 닭고기, 쇠고기 뿌링클 HOT 시즈닝 : 우유, 대두 바삭클 배터믹스 : 밀, 대두</td></tr>
+<tr><td>치킨</td><td>뿌링클 콤보</td><td style="text-align:left">닭 : 닭고기, 대두 뿌링클시즈닝 : 우유, 대두 뿌링뿌링소스 : 계란, 우유, 대두 <br>순살바삭클 : 대두, 밀, 닭고기, 쇠고기 뿌링클 HOT 시즈닝 : 우유, 대두 바삭클 배터믹스 : 밀, 대두</td></tr>
+<tr><td>치킨</td><td>뿌링클 순살</td><td style="text-align:left">닭 : 닭고기, 대두 뿌링클시즈닝 : 우유, 대두 뿌링뿌링소스 : 계란, 우유, 대두 <br>순살바삭클 : 대두, 밀, 닭고기, 쇠고기 뿌링클 HOT 시즈닝 : 우유, 대두 바삭클 배터믹스 : 밀, 대두</td></tr>
+<tr><td>치킨</td><td>뿌링클 윙</td><td style="text-align:left">닭고기, 대두, 우유, 난류, 밀, 쇠고기 뿌링클시즈닝 : 우유, 대두 뿌링뿌링소스 : 계란, 우유, 대두 <br>순살바삭클 : 대두, 밀, 닭고기, 쇠고기 뿌링클 HOT 시즈닝 : 우유, 대두 바삭클 배터믹스 : 밀, 대두</td></tr>
+<tr><td>치킨</td><td>뿌링클 스틱</td><td style="text-align:left">닭 : 닭고기, 대두 뿌링클시즈닝 : 우유, 대두 뿌링뿌링소스 : 계란, 우유, 대두 <br>순살바삭클 : 대두, 밀, 닭고기, 쇠고기 뿌링클 HOT 시즈닝 : 우유, 대두 바삭클 배터믹스 : 밀, 대두</td></tr>
+<tr><td>치킨</td><td>HOT뿌링클</td><td style="text-align:left">닭 : 닭고기, 대두 뿌링클시즈닝 : 우유, 대두 뿌링뿌링소스 : 계란, 우유, 대두 <br>순살바삭클 : 대두, 밀, 닭고기, 쇠고기 뿌링클 HOT 시즈닝 : 우유, 대두 바삭클 배터믹스 : 밀, 대두</td></tr>
+<tr><td>치킨</td><td>HOT뿌링클 순살</td><td style="text-align:left">닭 : 닭고기, 대두 뿌링클시즈닝 : 우유, 대두 뿌링뿌링소스 : 계란, 우유, 대두 <br>순살바삭클 : 대두, 밀, 닭고기, 쇠고기 뿌링클 HOT 시즈닝 : 우유, 대두 바삭클 배터믹스 : 밀, 대두</td></tr>
+<tr><td>치킨</td><td>후라이드</td><td style="text-align:left">닭 : 닭고기, 대두 후라이드 배터믹스 : 계란, 대두, 밀, 조개류(굴) bhc양념치킨소스 : 대두, 밀, 토마토 <br>매운양념소스 : 대두, 계란, 토마토 HOT 후라이드 시즈닝 : 대두, 밀, 우유, 토마토</td></tr>
+<tr><td>치킨</td><td>후라이드/양념 반반치킨</td><td style="text-align:left">닭고기, 대두, 난류, 밀, 토마토, 쇠고기, 조개류(굴)</td></tr>
+<tr><td>치킨</td><td>후라이드 콤보</td><td style="text-align:left">닭 : 닭고기, 대두 후라이드 배터믹스 : 계란, 대두, 밀, 조개류(굴) bhc양념치킨소스 : 대두, 밀, 토마토 <br>매운양념소스 : 대두, 계란, 토마토 HOT 후라이드 시즈닝 : 대두, 밀, 우유, 토마토</td></tr>
+<tr><td>치킨</td><td>후라이드 윙</td><td style="text-align:left">닭 : 닭고기, 대두 후라이드 배터믹스 : 계란, 대두, 밀, 조개류(굴) bhc양념치킨소스 : 대두, 밀, 토마토 <br>매운양념소스 : 대두, 계란, 토마토 HOT 후라이드 시즈닝 : 대두, 밀, 우유, 토마토</td></tr>
+<tr><td>치킨</td><td>후라이드 스틱</td><td style="text-align:left">닭 : 닭고기, 대두 후라이드 배터믹스 : 계란, 대두, 밀, 조개류(굴) bhc양념치킨소스 : 대두, 밀, 토마토 <br>매운양념소스 : 대두, 계란, 토마토 HOT 후라이드 시즈닝 : 대두, 밀, 우유, 토마토</td></tr>
+<tr><td>치킨</td><td>HOT후라이드</td><td style="text-align:left">닭 : 닭고기, 대두 후라이드 배터믹스 : 계란, 대두, 밀, 조개류(굴) bhc양념치킨소스 : 대두, 밀, 토마토 <br>매운양념소스 : 대두, 계란, 토마토 HOT 후라이드 시즈닝 : 대두, 밀, 우유, 토마토</td></tr>
+<tr><td>치킨</td><td>HOT후라이드 콤보</td><td style="text-align:left">닭 : 닭고기, 대두 후라이드 배터믹스 : 계란, 대두, 밀, 조개류(굴) bhc양념치킨소스 : 대두, 밀, 토마토 <br>매운양념소스 : 대두, 계란, 토마토 HOT 후라이드 시즈닝 : 대두, 밀, 우유, 토마토</td></tr>
+<tr><td>치킨</td><td>HOT후라이드 윙</td><td style="text-align:left">닭 : 닭고기, 대두 후라이드 배터믹스 : 계란, 대두, 밀, 조개류(굴) bhc양념치킨소스 : 대두, 밀, 토마토 <br>매운양념소스 : 대두, 계란, 토마토 HOT 후라이드 시즈닝 : 대두, 밀, 우유, 토마토</td></tr>
+<tr><td>치킨</td><td>HOT후라이드 스틱</td><td style="text-align:left">닭 : 닭고기, 대두 후라이드 배터믹스 : 계란, 대두, 밀, 조개류(굴) bhc양념치킨소스 : 대두, 밀, 토마토 <br>매운양념소스 : 대두, 계란, 토마토 HOT 후라이드 시즈닝 : 대두, 밀, 우유, 토마토</td></tr>
+<tr><td>치킨</td><td>양념치킨</td><td style="text-align:left">후라이드 배터믹스 : 난류, 대두, 밀, 조개류(굴) bhc양념치킨소스 : 대두, 밀, 토마토</td></tr>
+<tr><td>치킨</td><td>양념치킨 콤보</td><td style="text-align:left">닭고기, 대두, 난류, 밀, 토마토, 쇠고기, 조개류(굴)</td></tr>
+<tr><td>치킨</td><td>양념치킨 윙</td><td style="text-align:left">닭고기, 대두, 난류, 밀, 토마토, 쇠고기, 조개류(굴)</td></tr>
+<tr><td>치킨</td><td>양념치킨 스틱</td><td style="text-align:left">닭고기, 대두, 난류, 밀, 토마토, 쇠고기, 조개류(굴)</td></tr>
+<tr><td>치킨</td><td>바삭클</td><td style="text-align:left">닭 : 닭고기, 대두 바삭클 배터믹스 : 밀, 대두</td></tr>
+<tr><td>치킨</td><td>바삭클 순살</td><td style="text-align:left">닭 : 닭고기, 대두 바삭클 배터믹스 : 밀, 대두</td></tr>
+<tr><td>치킨</td><td>맛초킹</td><td style="text-align:left">닭 : 닭고기, 대두 맛초킹 배터믹스 : 계란 맛초킹소스 : 대두, 밀 통살치킨 : 대두, 밀, 닭고기, 우유, 토마토</td></tr>
+<tr><td>치킨</td><td>맛초킹 콤보</td><td style="text-align:left">닭 : 닭고기, 대두 맛초킹 배터믹스 : 계란 맛초킹소스 : 대두, 밀 통살치킨 : 대두, 밀, 닭고기, 우유, 토마토</td></tr>
+<tr><td>치킨</td><td>맛초킹 순살</td><td style="text-align:left">닭 : 닭고기, 대두 맛초킹 배터믹스 : 계란 맛초킹소스 : 대두, 밀 통살치킨 : 대두, 밀, 닭고기, 우유, 토마토</td></tr>
+<tr><td>치킨</td><td>맛초킹 윙</td><td style="text-align:left">닭 : 닭고기, 대두 맛초킹 배터믹스 : 계란 맛초킹소스 : 대두, 밀 통살치킨 : 대두, 밀, 닭고기, 우유, 토마토</td></tr>
+<tr><td>치킨</td><td>맛초킹 스틱</td><td style="text-align:left">닭 : 닭고기, 대두 맛초킹 배터믹스 : 계란 맛초킹소스 : 대두, 밀 통살치킨 : 대두, 밀, 닭고기, 우유, 토마토</td></tr>
+<tr><td>치킨</td><td>골드킹</td><td style="text-align:left">닭 : 닭고기, 대두 후라이드 배터믹스 : 계란, 대두, 밀, 조개류(굴) <br>골드킹 소스 : 대두, 밀 골드킹 순살 : 계란, 대두, 밀, 닭고기, 조개류(굴)</td></tr>
+<tr><td>치킨</td><td>골드킹 콤보</td><td style="text-align:left">닭 : 닭고기, 대두 후라이드 배터믹스 : 계란, 대두, 밀, 조개류(굴) <br>골드킹 소스 : 대두, 밀 골드킹 순살 : 계란, 대두, 밀, 닭고기, 조개류(굴)</td></tr>
+<tr><td>치킨</td><td>골드킹 순살</td><td style="text-align:left">닭 : 닭고기, 대두 후라이드 배터믹스 : 계란, 대두, 밀, 조개류(굴) <br>골드킹 소스 : 대두, 밀 골드킹 순살 : 계란, 대두, 밀, 닭고기, 조개류(굴)</td></tr>
+<tr><td>치킨</td><td>골드킹 윙</td><td style="text-align:left">닭 : 닭고기, 대두 후라이드 배터믹스 : 계란, 대두, 밀, 조개류(굴) <br>골드킹 소스 : 대두, 밀 골드킹 순살 : 계란, 대두, 밀, 닭고기, 조개류(굴)</td></tr>
+<tr><td>치킨</td><td>골드킹 스틱</td><td style="text-align:left">닭 : 닭고기, 대두 후라이드 배터믹스 : 계란, 대두, 밀, 조개류(굴) <br>골드킹 소스 : 대두, 밀 골드킹 순살 : 계란, 대두, 밀, 닭고기, 조개류(굴)</td></tr>
+<tr><td>치킨</td><td>HOT골드킹</td><td style="text-align:left">닭고기, 대두, 밀, 우유, 토마토, 난류, 조개류(굴)</td></tr>
+<tr><td>치킨</td><td>HOT골드킹 콤보</td><td style="text-align:left">닭고기, 대두, 밀, 우유, 토마토, 난류, 조개류(굴)</td></tr>
+<tr><td>치킨</td><td>HOT골드킹 윙</td><td style="text-align:left">닭고기, 대두, 밀, 우유, 토마토, 난류, 조개류(굴)</td></tr>
+<tr><td>치킨</td><td>HOT골드킹 스틱</td><td style="text-align:left">닭고기, 대두, 밀, 우유, 토마토, 난류, 조개류(굴)</td></tr>
+<tr><td>치킨</td><td>쏘마치</td><td style="text-align:left">닭 : 닭고기, 대두 쏘마치 배터믹스 : 난류, 대두, 밀, 조개류(굴) 함유 <br>쏘마치 소스 : 대두, 밀, 토마토, 쇠고기, 조개류(굴) 함유</td></tr>
+<tr><td>치킨</td><td>쏘마치 콤보</td><td style="text-align:left">닭 : 닭고기, 대두 쏘마치 배터믹스 : 난류, 대두, 밀, 조개류(굴) 함유 <br>쏘마치 소스 : 대두, 밀, 토마토, 쇠고기, 조개류(굴) 함유</td></tr>
+<tr><td>치킨</td><td>쏘마치 순살</td><td style="text-align:left">닭 : 닭고기, 대두 쏘마치 배터믹스 : 난류, 대두, 밀, 조개류(굴) 함유 <br>쏘마치 소스 : 대두, 밀, 토마토, 쇠고기, 조개류(굴) 함유</td></tr>
+<tr><td>치킨</td><td>쏘마치 윙</td><td style="text-align:left">닭 : 닭고기, 대두 쏘마치 배터믹스 : 난류, 대두, 밀, 조개류(굴) 함유 <br>쏘마치 소스 : 대두, 밀, 토마토, 쇠고기, 조개류(굴) 함유</td></tr>
+<tr><td>치킨</td><td>쏘마치 스틱</td><td style="text-align:left">닭 : 닭고기, 대두 쏘마치 배터믹스 : 난류, 대두, 밀, 조개류(굴) 함유 <br>쏘마치 소스 : 대두, 밀, 토마토, 쇠고기, 조개류(굴) 함유</td></tr>
+<tr><td>치킨</td><td>더블팝순살 양념</td><td style="text-align:left">더블팝순살 : 닭고기, 밀, 알류, 대구, 조개류(굴), 우유, 토마토 <br>더블팝순살 양념소스 : 대두, 밀, 쇠고기, 토마토, 조개류(굴) 더블팝순살 크림치즈소스 : 계란, 우유, 대두, 쇠고기</td></tr>
+<tr><td>치킨</td><td>더블팝순살 후라이드</td><td style="text-align:left">더블팝순살 : 닭고기, 밀, 알류, 대구, 조개류(굴), 우유, 토마토 <br>양념치킨소스 : 대두, 밀, 토마토 허니머스타드드레싱 : 계란, 대두, 밀</td></tr>
+<tr><td>치킨</td><td>레드킹</td><td style="text-align:left">닭 : 닭고기, 대두 맛초킹 배터믹스 : 계란 <br>맵스터소스 : 대두, 밀, 토마토 통살치킨 : 대두, 밀, 닭고기, 우유, 토마토</td></tr>
+<tr><td>치킨</td><td>레드킹 콤보</td><td style="text-align:left">닭 : 닭고기, 대두 맛초킹 배터믹스 : 계란 <br>맵스터소스 : 대두, 밀, 토마토 통살치킨 : 대두, 밀, 닭고기, 우유, 토마토</td></tr>
+<tr><td>치킨</td><td>레드킹 순살</td><td style="text-align:left">닭 : 닭고기, 대두 맛초킹 배터믹스 : 계란 <br>맵스터소스 : 대두, 밀, 토마토 통살치킨 : 대두, 밀, 닭고기, 우유, 토마토</td></tr>
+<tr><td>치킨</td><td>레드킹 윙</td><td style="text-align:left">닭 : 닭고기, 대두 맛초킹 배터믹스 : 계란 <br>맵스터소스 : 대두, 밀, 토마토 통살치킨 : 대두, 밀, 닭고기, 우유, 토마토</td></tr>
+<tr><td>치킨</td><td>레드킹 스틱</td><td style="text-align:left">닭 : 닭고기, 대두 맛초킹 배터믹스 : 계란 <br>맵스터소스 : 대두, 밀, 토마토 통살치킨 : 대두, 밀, 닭고기, 우유, 토마토</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹(허니) 3&7콤보</td><td style="text-align:left">대두, 닭고기, 밀, 쇠고기, 조개류(굴), 우유, 새우, 알류</td></tr>
+<tr><td>치킨</td><td>쏘이갈릭킹(오리지널) 3&7콤보</td><td style="text-align:left">대두, 닭고기, 밀, 쇠고기, 조개류(굴), 새우, 알류</td></tr>
+<tr><td>치킨</td><td>스윗칠리킹 3&7콤보</td><td style="text-align:left">대두, 닭고기, 난류, 밀, 조개류(굴), 우유, 토마토, 쇠고기</td></tr>
+<tr><td>치킨</td><td>콰삭톡 3&7콤보</td><td style="text-align:left">콰삭킹 콤보 : 닭고기, 대두, 난류, 밀, 땅콩, 우유, 새우, 쇠고기, 조개류(굴) <br>스윗 칠리톡 : 우유, 대두, 밀, 토마토, 쇠고기 버터 비스킷톡 : 우유, 대두, 밀 트리플 페퍼톡 : 우유, 대두, 밀</td></tr>
+<tr><td>치킨</td><td>콰삭킹 3&7콤보</td><td style="text-align:left">땅콩, 대두, 우유, 새우, 밀, 쇠고기, 조개류(굴), 계란, 닭고기</td></tr>
+<tr><td>치킨</td><td>뿌링클 3&7콤보</td><td style="text-align:left">닭 : 닭고기, 대두 뿌링클시즈닝 : 우유, 대두 뿌링뿌링소스 : 계란, 우유, 대두 <br>순살바삭클 : 대두, 밀, 닭고기, 쇠고기 뿌링클 HOT 시즈닝 : 우유, 대두 바삭클 배터믹스 : 밀, 대두</td></tr>
+<tr><td>치킨</td><td>맛초킹 3&7콤보</td><td style="text-align:left">닭 : 닭고기, 대두 맛초킹 배터믹스 : 계란 맛초킹소스 : 대두, 밀 통살치킨 : 대두, 밀, 닭고기, 우유, 토마토</td></tr>
+<tr><td>치킨</td><td>레드킹 3&7콤보</td><td style="text-align:left">닭 : 닭고기, 대두 맛초킹 배터믹스 : 계란 <br>맵스터소스 : 대두, 밀, 토마토 통살치킨 : 대두, 밀, 닭고기, 우유, 토마토</td></tr>
+<tr><td>치킨</td><td>골드킹 3&7콤보</td><td style="text-align:left">닭 : 닭고기, 대두 후라이드 배터믹스 : 계란, 대두, 밀, 조개류(굴) <br>골드킹 소스 : 대두, 밀 골드킹 순살 : 계란, 대두, 밀, 닭고기, 조개류(굴)</td></tr>
+<tr><td>치킨</td><td>후라이드 3&7콤보</td><td style="text-align:left">닭 : 닭고기, 대두 후라이드 배터믹스 : 계란, 대두, 밀, 조개류(굴) bhc양념치킨소스 : 대두, 밀, 토마토 <br>매운양념소스 : 대두, 계란, 토마토 HOT 후라이드 시즈닝 : 대두, 밀, 우유, 토마토</td></tr>
+<tr><td>치킨</td><td>쏘마치 3&7콤보</td><td style="text-align:left">닭 : 닭고기, 대두 쏘마치 배터믹스 : 난류, 대두, 밀, 조개류(굴) 함유 <br>쏘마치 소스 : 대두, 밀, 토마토, 쇠고기, 조개류(굴) 함유</td></tr>
+<tr><td>치킨</td><td>양념치킨 3&7콤보</td><td style="text-align:left">닭고기, 대두, 난류, 밀, 토마토, 쇠고기, 조개류(굴)</td></tr>
+<tr><td>치킨</td><td>콜팝, 미니콜팝, 왕콜팝, 빅콜팝
+(음료, 소스 제외)</td><td style="text-align:left">닭고기, 밀, 대두, 난류, 우유, 쇠고기</td></tr>
+<tr><td>치킨</td><td>뿌링콜팝, 뿌링미니콜팝, 
+뿌링왕콜팝, 뿌링빅콜팝
+(음료, 소스 제외)</td><td style="text-align:left">닭고기, 밀, 대두, 난류, 우유, 쇠고기</td></tr>
+<tr><td>사이드</td><td>카이막치즈볼</td><td style="text-align:left">우유, 대두, 밀</td></tr>
+<tr><td>사이드</td><td>뿌링카이막치즈볼</td><td style="text-align:left">우유, 대두, 밀</td></tr>
+<tr><td>사이드</td><td>콰삭슈림프</td><td style="text-align:left">밀, 대두, 쇠고기, 조개류(굴), 땅콩, 새우, 우유, 계란</td></tr>
+<tr><td>사이드</td><td>뿌링클나쵸</td><td style="text-align:left">대두,우유</td></tr>
+<tr><td>사이드</td><td>뿌링클라이스</td><td style="text-align:left">대두,우유,밀,쇠고기,닭고기,토마토,조개류</td></tr>
+<tr><td>사이드</td><td>맛초킹라이스</td><td style="text-align:left">대두,우유,밀,쇠고기,닭고기,게,조개류</td></tr>
+<tr><td>사이드</td><td>맛초타코야끼</td><td style="text-align:left">대두, 밀, 난류, 쇠고기, 조개류(굴)</td></tr>
+<tr><td>사이드</td><td>뿌링진미채튀김</td><td style="text-align:left">진미채후라이드 : 난류, 대두, 밀, 오징어 / 뿌링클 시즈닝 : 우유, 대두</td></tr>
+<tr><td>사이드</td><td>치로스</td><td style="text-align:left">밀, 우유, 대두, 달걀</td></tr>
+<tr><td>사이드</td><td>달콤바삭치즈볼</td><td style="text-align:left">치즈볼 : 우유, 대두, 밀</td></tr>
+<tr><td>사이드</td><td>뿌링치즈볼</td><td style="text-align:left">치즈볼 : 우유, 대두, 밀 / 뿌링클 시즈닝 : 우유, 대두</td></tr>
+<tr><td>사이드</td><td>분모자로제떡볶이</td><td style="text-align:left">우유, 대두, 밀, 돼지고기, 소고기</td></tr>
+<tr><td>사이드</td><td>뿌링감자</td><td style="text-align:left">우유, 대두 밀</td></tr>
+<tr><td>사이드</td><td>빨간소떡</td><td style="text-align:left">소떡소떡 : 돼지고기, 닭고기, 쇠고기, 밀, 대두, 토마토, 계란 / <br>bhc양념치킨소스 : 대두, 밀, 토마토 / 레드킹소스 : 대두, 밀, 토마토</td></tr>
+<tr><td>사이드</td><td>뿌링소떡</td><td style="text-align:left">소떡소떡 : 돼지고기, 닭고기, 쇠고기, 밀, 대두, 토마토, 계란 / 뿌링클 시즈닝 : 우유, 대두</td></tr>
+<tr><td>사이드</td><td>뿌링핫도그</td><td style="text-align:left">뿌링핫도그 : 돼지고기, 닭고기, 쇠고기, 대두, 난류, 밀, 우유, 토마토 / 뿌링클 시즈닝 : 우유, 대두</td></tr>
+<tr><td>사이드</td><td>웨지감자</td><td style="text-align:left">대두, 밀</td></tr>
+<tr><td>사이드</td><td>뿌링치즈스틱</td><td style="text-align:left">치즈스틱 : 계란, 우유, 대두, 밀 / 뿌링클 시즈닝 : 우유, 대두</td></tr>
+<tr><td>사이드</td><td>케이준프라이</td><td style="text-align:left">케이준 양념감자 : 밀, 대두</td></tr>
+<tr><td>사이드</td><td>치킨스넥</td><td style="text-align:left">닭목살 : 닭고기, 대두, 밀, 우유, 토마토 / 후라이드 배터믹스 : 계란, 대두, 밀, 조개류(굴) / <br>양념치킨소스 : 대두, 밀, 토마토 / 건빵가루 : 밀</td></tr>
+<tr><td>시즈닝</td><td>스윗 칠리톡</td><td style="text-align:left">우유, 대두, 밀, 토마토, 쇠고기</td></tr>
+<tr><td>시즈닝</td><td>버터 비스킷톡</td><td style="text-align:left">우유, 대두, 밀</td></tr>
+<tr><td>시즈닝</td><td>트리플 페퍼톡</td><td style="text-align:left">우유, 대두, 밀</td></tr>
+<tr><td>피자</td><td>콤비네이션피자R</td><td style="text-align:left">밀, 대두, 우유, 계란, 토마토, 쇠고기, 돼지고기, 조개류(굴)</td></tr>
+<tr><td>피자</td><td>감자피자R</td><td style="text-align:left">밀, 대두, 우유, 계란, 토마토, 쇠고기, 돼지고기</td></tr>
+<tr><td>피자</td><td>고구마피자R</td><td style="text-align:left">밀, 대두, 우유, 계란, 토마토, 쇠고기, 돼지고기, 조개류(굴)</td></tr>
+<tr><td>피자</td><td>퐁듀피자R</td><td style="text-align:left">밀, 대두, 우유, 계란, 토마토, 쇠고기, 돼지고기</td></tr>
+<tr><td>피자</td><td>불고기피자R</td><td style="text-align:left">밀, 대두, 우유, 계란, 토마토, 쇠고기, 아황산류, 조개류(굴)</td></tr>
+<tr><td>피자</td><td>콤비네이션피자L</td><td style="text-align:left">밀, 대두, 우유, 계란, 토마토, 쇠고기, 돼지고기, 조개류(굴)</td></tr>
+<tr><td>피자</td><td>감자피자L</td><td style="text-align:left">밀, 대두, 우유, 계란, 토마토, 쇠고기, 돼지고기</td></tr>
+<tr><td>피자</td><td>고구마피자L</td><td style="text-align:left">밀, 대두, 우유, 계란, 토마토, 쇠고기, 돼지고기, 조개류(굴)</td></tr>
+<tr><td>피자</td><td>퐁듀피자L</td><td style="text-align:left">밀, 대두, 우유, 계란, 토마토, 쇠고기, 돼지고기</td></tr>
+<tr><td>피자</td><td>불고기피자L</td><td style="text-align:left">밀, 대두, 우유, 계란, 토마토, 쇠고기, 아황산류, 조개류(굴)</td></tr>
+</tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function openTab(event, tabName) {
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabName).classList.add('active');
+    event.currentTarget.classList.add('active');
+  }
+</script>
+</body>
+</html>
